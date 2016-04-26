@@ -30,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-        Intent intent = new Intent(this, HomeActivity.class);
-        startActivity(intent);
     }
 
     @Override
