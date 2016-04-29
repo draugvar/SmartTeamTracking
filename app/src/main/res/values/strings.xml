@@ -3,4 +3,9 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="group_icon_description">group_icon</string>
+    <string name="group_name">group name</string>
+    <string name="group_description">group description</string>
+    <string name="enter_group_name">Enter group\'s name</string>
+    <string name="friends">Friends</string>
 </resources>

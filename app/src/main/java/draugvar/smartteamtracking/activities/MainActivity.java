@@ -5,12 +5,17 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.mikepenz.fastadapter.adapters.FastItemAdapter;
+
 import draugvar.smartteamtracking.R;
+import draugvar.smartteamtracking.adapter.GroupItem;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +35,21 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        //create our FastAdapter which will manage everything
+        FastItemAdapter fastAdapter = new FastItemAdapter();
+
+        //set our adapters to the RecyclerView
+        //we wrap our FastAdapter inside the ItemAdapter -> This allows us to chain adapters for more complex useCases
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.group_recycler_view);
+        assert recyclerView != null;
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(fastAdapter);
+
+        //set the items to your ItemAdapter
+        GroupItem groupItem = new GroupItem();
+        groupItem.name = "Gruppone";
+        groupItem.description = "Questa si che è una descrizione";
+        
     }
 
     @Override
