@@ -31,8 +31,10 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(getApplicationContext(),CreateGroupActivity.class);
+                startActivity(intent);
+                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();*/
             }
         });
         //create our FastAdapter which will manage everything
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         GroupItem groupItem = new GroupItem();
         groupItem.name = "Gruppone";
         groupItem.description = "Questa si che è una descrizione";
-        
+
     }
 
     @Override

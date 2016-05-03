@@ -8,4 +8,9 @@
     <string name="group_description">group description</string>
     <string name="enter_group_name">Enter group\'s name</string>
     <string name="friends">Friends</string>
+    <string name="available_users">aval_users</string>
+    <string name="friend_name">Friend Name</string>
+    <string name="friend_description">Friend description</string>
+    <string name="available_friend">online/offline</string>
+    <string name="initials">FN</string>
 </resources>
