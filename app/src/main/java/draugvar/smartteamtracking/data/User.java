@@ -1,6 +1,8 @@
 package draugvar.smartteamtracking.data;
 
-public class User {
+import io.realm.RealmObject;
+
+public class User extends RealmObject {
 
     private long ID;
     private String name;
@@ -9,6 +11,15 @@ public class User {
     private String pw;
     private Double latGPS;
     private Double lonGPS;
+
+    public User(){
+        this.name = null;
+        this.surname = null;
+        this.email = null;
+        this.pw = null;
+        this.latGPS = null;
+        this.lonGPS = null;
+    }
 
     public User(long ID, String name, String surname, String email, String pw, Double latGPS, Double lonGPS) {
         this.ID = ID;

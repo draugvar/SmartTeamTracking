@@ -1,15 +1,23 @@
 package draugvar.smartteamtracking.data;
 
-import java.util.HashMap;
+import io.realm.RealmList;
+import io.realm.RealmObject;
 
-public class Group {
+public class Group extends RealmObject {
 
     private long ID;
     private String name;
     private Double latCenter;
     private Double lonCenter;
     private int radius;
-    private HashMap<Long, User> users;
+    private RealmList<User> users;
+
+    public Group(){
+        this.name = null;
+        this.latCenter = null;
+        this.lonCenter = null;
+        this.users = new RealmList<>();
+    }
 
     public Group(long ID, String name, Double latCenter, Double lonCenter, int radius) {
         this.ID = ID;
@@ -17,7 +25,7 @@ public class Group {
         this.latCenter = latCenter;
         this.lonCenter = lonCenter;
         this.radius = radius;
-        this.users = new HashMap<>();
+        this.users = new RealmList<>();
     }
 
     public long getID() {
@@ -61,10 +69,10 @@ public class Group {
     }
 
     public void addUser(User user){
-        users.put(user.getID(), user);
+        users.add(user);
     }
 
     public void removeUser(User user){
-        users.remove(user.getID());
+        users.remove(user);
     }
 }

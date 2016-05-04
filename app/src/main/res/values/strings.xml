@@ -13,4 +13,10 @@
     <string name="friend_description">Friend description</string>
     <string name="available_friend">online/offline</string>
     <string name="initials">FN</string>
+    <string name="group_initials">GN</string>
+    <string name="title_activity_friends">FriendsActivity</string>
+    <string name="enter_friends_mail">Enter friend\'s mail</string>
+    <string name="accept">accept</string>
+    <string name="enter_zone">choose the appropriate place</string>
+    <string name="nul">null</string>
 </resources>

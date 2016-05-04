@@ -12,27 +12,53 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/activity_horizontal_margin">
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_btn_speak_now"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_group" />
+
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:hint="@string/enter_group_name"/>
+            android:hint="@string/enter_group_name" />
     </LinearLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/grey_300"
-        android:text="@string/friends"
-        android:padding="5dp"/>
-    <android.support.v7.widget.RecyclerView
+        android:padding="5dp"
+        android:text="@string/enter_zone" />
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/chosen_friends"/>
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="6dp"
+            android:src="@drawable/ic_my_location"
+            android:contentDescription="@string/nul"
+            android:clickable="true"
+            android:onClick="centerMyLocation"/>
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="center_horizontal"
+            android:progress="5"/>
+    </LinearLayout>
 </LinearLayout>
