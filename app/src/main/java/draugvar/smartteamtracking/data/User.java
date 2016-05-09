@@ -1,16 +1,18 @@
 package draugvar.smartteamtracking.data;
 
+import org.parceler.Parcel;
 import io.realm.RealmObject;
 
+@Parcel
 public class User extends RealmObject {
 
-    private long ID;
-    private String name;
-    private String surname;
-    private String email;
-    private String pw;
-    private Double latGPS;
-    private Double lonGPS;
+    long ID;
+    String name;
+    String surname;
+    String email;
+    String pw;
+    Double latGPS;
+    Double lonGPS;
 
     public User(){
         this.name = null;
@@ -29,6 +31,13 @@ public class User extends RealmObject {
         this.pw = pw;
         this.latGPS = latGPS;
         this.lonGPS = lonGPS;
+    }
+
+    public User(long ID, String name, String surname, String email) {
+        this.ID = ID;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
     }
 
     public long getID() {

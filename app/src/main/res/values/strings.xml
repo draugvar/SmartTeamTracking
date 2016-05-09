@@ -17,6 +17,7 @@
     <string name="title_activity_friends">FriendsActivity</string>
     <string name="enter_friends_mail">Enter friend\'s mail</string>
     <string name="accept">accept</string>
-    <string name="enter_zone">choose the appropriate place</string>
+    <string name="enter_zone">choose the appropriate area</string>
     <string name="nul">null</string>
+    <string name="title_activity_group">GroupActivity</string>
 </resources>

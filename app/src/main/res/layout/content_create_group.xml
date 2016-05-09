@@ -28,11 +28,11 @@
     </LinearLayout>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/grey_300"
-        android:padding="5dp"
-        android:text="@string/enter_zone" />
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/grey_300"
+    android:padding="5dp"
+    android:text="@string/enter_zone" />
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
 
@@ -58,7 +58,6 @@
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_gravity="center_horizontal"
-            android:progress="5"/>
+            android:layout_gravity="center_horizontal"/>
     </LinearLayout>
 </LinearLayout>

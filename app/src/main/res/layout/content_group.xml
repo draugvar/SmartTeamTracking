@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="draugvar.smartteamtracking.activities.GroupActivity"
+    tools:showIn="@layout/activity_group"
+    android:baselineAligned="false">
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/group_map"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.9" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey_300"
+        android:padding="5dp"
+        android:text="@string/friends" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/group_friends"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.1"/>
+
+</LinearLayout>
