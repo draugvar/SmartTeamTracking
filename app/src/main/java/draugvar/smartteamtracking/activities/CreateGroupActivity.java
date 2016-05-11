@@ -2,6 +2,7 @@ package draugvar.smartteamtracking.activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Criteria;
@@ -14,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.SeekBar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,13 +25,23 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.parceler.Parcels;
+
+import java.util.ArrayList;
+
 import draugvar.smartteamtracking.R;
+import draugvar.smartteamtracking.data.Group;
+import draugvar.smartteamtracking.data.User;
+import io.realm.Realm;
 
 public class CreateGroupActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private LocationManager locationManager;
     private CircleOptions circleOptions;
+    private EditText group_name;
+    private Realm realm;
+    private SeekBar seekBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +53,16 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Create Group");
 
+        realm = Realm.getDefaultInstance();
+
+        group_name = (EditText) findViewById(R.id.chosen_group_name);
+
         // CircleOption init
         circleOptions = new CircleOptions()
-                .radius(100) // In meters
-                .strokeWidth(2)
-                .strokeColor(Color.MAGENTA);
+                .radius(1) // In meters
+                .strokeWidth(3)
+                .strokeColor(Color.argb(40,20,20,20))
+                .fillColor(Color.argb(20,20,20,20));
 
         // MAP init
         MapFragment mapFragment = (MapFragment) getFragmentManager()
@@ -56,13 +73,13 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
                 getSystemService(Context.LOCATION_SERVICE);
 
         // Slider stuff
-        SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
+        seekBar = (SeekBar) findViewById(R.id.seekBar);
         assert seekBar != null;
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mMap.clear();
-                circleOptions.radius(progress);
+                circleOptions.radius(progress*50);
                 mMap.addCircle(circleOptions);
             }
 
@@ -76,6 +93,7 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
 
             }
         });
+        seekBar.setEnabled(false);
     }
 
     public void centerMyLocation(View view) {
@@ -90,6 +108,7 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
             circleOptions.center(new LatLng(latitude, longitude));
             mMap.addCircle(circleOptions);
         }
+        seekBar.setEnabled(true);
     }
 
     @Override
@@ -102,9 +121,11 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
             Location location = locationManager.getLastKnownLocation(locationManager
                     .getBestProvider(new Criteria(), true));
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15));
+            if(location != null) {
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 12));
+            }
         } else {
             // Show rationale and request permission.
         }
@@ -126,7 +147,18 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.accept_group) {
-            return true;
+            String g_name = group_name.getText().toString();
+            realm.beginTransaction();
+            Group mGroup = realm.createObject(Group.class);
+            mGroup.setName(g_name);
+            mGroup.setGid(0);
+            ArrayList<User> users = Parcels.unwrap(getIntent().getParcelableExtra("users"));
+            for(User u: users){
+                mGroup.addUser(u);
+            }
+            realm.commitTransaction();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

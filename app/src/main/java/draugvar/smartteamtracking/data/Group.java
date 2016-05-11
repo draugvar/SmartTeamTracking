@@ -1,11 +1,16 @@
 package draugvar.smartteamtracking.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Group extends RealmObject {
 
-    private long ID;
+    @JsonProperty("id")
+    private long gid;
     private String name;
     private Double latCenter;
     private Double lonCenter;
@@ -19,8 +24,8 @@ public class Group extends RealmObject {
         this.users = new RealmList<>();
     }
 
-    public Group(long ID, String name, Double latCenter, Double lonCenter, int radius) {
-        this.ID = ID;
+    public Group(long gid, String name, Double latCenter, Double lonCenter, int radius) {
+        this.gid = gid;
         this.name = name;
         this.latCenter = latCenter;
         this.lonCenter = lonCenter;
@@ -28,12 +33,12 @@ public class Group extends RealmObject {
         this.users = new RealmList<>();
     }
 
-    public long getID() {
-        return ID;
+    public long getGid() {
+        return gid;
     }
 
-    public void setID(long ID) {
-        this.ID = ID;
+    public void setGid(long gid) {
+        this.gid = gid;
     }
 
     public String getName() {
@@ -74,5 +79,13 @@ public class Group extends RealmObject {
 
     public void removeUser(User user){
         users.remove(user);
+    }
+
+    public RealmList<User> getUsers(){
+        return users;
+    }
+
+    public int countUsers(){
+        return users.size();
     }
 }

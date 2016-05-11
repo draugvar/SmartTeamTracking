@@ -1,10 +1,10 @@
 package draugvar.smartteamtracking.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,12 +13,19 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.mikepenz.fastadapter.FastAdapter;
+import com.mikepenz.fastadapter.IAdapter;
+import com.mikepenz.fastadapter.IItem;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 
 import draugvar.smartteamtracking.R;
 import draugvar.smartteamtracking.adapter.GroupItem;
+import draugvar.smartteamtracking.data.Group;
+import draugvar.smartteamtracking.singleton.WorkflowManager;
+import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity {
+    private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //create our FastAdapter which will manage everything
-        FastItemAdapter fastAdapter = new FastItemAdapter();
+        final FastItemAdapter fastAdapter = new FastItemAdapter();
 
         //set our adapters to the RecyclerView
         //we wrap our FastAdapter inside the ItemAdapter -> This allows us to chain adapters for more complex useCases
@@ -46,6 +53,62 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(fastAdapter);
 
+        // groups population
+        WorkflowManager.getWorkflowManager().setContext(getApplicationContext());
+        WorkflowManager.getWorkflowManager().setRealm();
+        realm = Realm.getDefaultInstance();
+        for (Group group : realm.where(Group.class).findAll()) {
+            GroupItem groupItem = new GroupItem(group);
+            fastAdapter.add(groupItem);
+        }
+        // ----- FASTADAPTER -- OnLongCLickListener -----
+        fastAdapter.withOnLongClickListener(new FastAdapter.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v, IAdapter adapter, IItem item, final int position) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+
+                builder.setTitle("Delete this group");
+                builder.setMessage("Are you sure?");
+
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Do nothing but close the dialog
+                        GroupItem groupItem = (GroupItem) fastAdapter.getAdapterItem(position);
+                        fastAdapter.remove(position);
+                        realm.beginTransaction();
+                        realm.where(Group.class).equalTo("gID", groupItem.group.getGid()).findAll()
+                                .deleteFirstFromRealm();
+                        realm.commitTransaction();
+                        dialog.dismiss();
+                    }
+
+                });
+
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Do nothing
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+                return true;
+            }
+        });
+        // ----- FASTADAPTER -- OnCLickListener ------
+        fastAdapter.withOnClickListener(new FastAdapter.OnClickListener() {
+            @Override
+            public boolean onClick(View v, IAdapter adapter, IItem item, int position) {
+                GroupItem groupItem = (GroupItem) item;
+                Intent intent = new Intent(getApplicationContext(), GroupActivity.class);
+                intent.putExtra("gid", groupItem.group.getGid());
+                startActivity(intent);
+                return true;
+            }
+        });
     }
 
     @Override

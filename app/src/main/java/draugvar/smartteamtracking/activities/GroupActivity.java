@@ -12,6 +12,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 
 import draugvar.smartteamtracking.R;
+import draugvar.smartteamtracking.adapter.FriendItem;
+import draugvar.smartteamtracking.data.Group;
+import draugvar.smartteamtracking.data.User;
+import io.realm.Realm;
 
 public class GroupActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -37,6 +41,12 @@ public class GroupActivity extends AppCompatActivity implements OnMapReadyCallba
         assert recyclerView != null;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(fastAdapter);
+        Realm realm = Realm.getDefaultInstance();
+        long gid = getIntent().getLongExtra("gid", 0);
+        Group group = realm.where(Group.class).equalTo("gid", gid).findFirst();
+        for(User user: group.getUsers()){
+            fastAdapter.add(new FriendItem(user));
+        }
     }
 
     @Override

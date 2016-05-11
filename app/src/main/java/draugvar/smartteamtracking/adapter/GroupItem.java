@@ -7,11 +7,14 @@ import android.widget.TextView;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import draugvar.smartteamtracking.R;
+import draugvar.smartteamtracking.data.Group;
 
 public class GroupItem extends AbstractItem<GroupItem, GroupItem.ViewHolder> {
-    public String name;
-    public String description;
-    public String num_users;
+    public Group group;
+
+    public GroupItem(Group group){
+        this.group = group;
+    }
 
     //The unique ID for this type of item
     @Override
@@ -33,11 +36,11 @@ public class GroupItem extends AbstractItem<GroupItem, GroupItem.ViewHolder> {
 
         //bind our data
         //set the text for the name
-        viewHolder.name.setText(name);
+        viewHolder.name.setText(group.getName());
         //set the text for the description or hide
-        viewHolder.description.setText(description);
+        viewHolder.description.setText(group.getGid() + "");
         //set the text for number of parties
-        viewHolder.num_users.setText(num_users);
+        viewHolder.num_users.setText(group.countUsers() + "");
     }
 
     //The viewHolder used for this item. This viewHolder is always reused by the RecyclerView so scrolling is blazing fast

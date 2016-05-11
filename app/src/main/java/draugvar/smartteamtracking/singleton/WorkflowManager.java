@@ -1,5 +1,6 @@
 package draugvar.smartteamtracking.singleton;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.util.LinkedList;
@@ -7,6 +8,8 @@ import java.util.List;
 
 import draugvar.smartteamtracking.data.Group;
 import draugvar.smartteamtracking.data.User;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 public class WorkflowManager {
 
@@ -16,6 +19,8 @@ public class WorkflowManager {
     private User myself;
     private List<User> userList = new LinkedList<User>(); // FRIENDS LIST
     private List<Group> groupList = new LinkedList<Group>(); // SHOULD MAKE LIST THREAD SAFE
+
+    private Context context;
 
     private WorkflowManager() {}
 
@@ -32,7 +37,13 @@ public class WorkflowManager {
 
     public void setMyself(User myself) {
         this.myself = myself;
-        Log.d("WORKFLOW", "User set: " + myself.toString());
     }
 
+    public void setContext(Context context){
+        this.context = context;
+    }
+
+    public void setRealm(){
+        Realm.setDefaultConfiguration( new RealmConfiguration.Builder(context).build());
+    }
 }

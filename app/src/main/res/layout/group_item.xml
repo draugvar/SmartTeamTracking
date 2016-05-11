@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/card_height"
-    android:layout_margin="2dp"
+    android:layout_margin="1dp"
     android:elevation="5dp">
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,14 +22,15 @@
                 android:layout_gravity="center"
                 android:text="@string/group_initials"
                 android:textColor="@color/white"
-                android:textSize="40sp"
+                android:textSize="30sp"
                 android:textAllCaps="true"/>
         </GridLayout>
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center">
             <TextView
                 android:id="@+id/group_name"
                 android:layout_width="match_parent"
@@ -45,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/group_description"
                 android:textAlignment="textStart"
-                android:layout_marginStart="15dp"/>
+                android:layout_marginStart="10dp"/>
         </LinearLayout>
         <TextView
             android:id="@+id/num_users"

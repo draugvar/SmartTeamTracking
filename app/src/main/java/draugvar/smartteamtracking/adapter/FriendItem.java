@@ -9,11 +9,14 @@ import android.widget.TextView;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import draugvar.smartteamtracking.R;
+import draugvar.smartteamtracking.data.User;
 
 public class FriendItem extends AbstractItem<FriendItem, FriendItem.ViewHolder> {
-    public String name;
-    public String description;
-    public String status;
+    public User user;
+
+    public FriendItem(User user){
+        this.user = user;
+    }
 
     //The unique ID for this type of item
     @Override
@@ -35,16 +38,15 @@ public class FriendItem extends AbstractItem<FriendItem, FriendItem.ViewHolder> 
         final Context context = viewHolder.status.getContext();
         //bind our data
         //set the text for the name
-        viewHolder.name.setText(name);
+        viewHolder.name.setText(user.getName());
         //set the text for the description or hide
-        viewHolder.description.setText(description);
+        viewHolder.description.setText(user.getSurname());
         //set the text for status of parties
-        viewHolder.status.setText(status);
-        if(status.equalsIgnoreCase("pending"))
-            viewHolder.status.setTextColor(ContextCompat.getColor(context, R.color.amber_400));
+        viewHolder.status.setText("pending");
+        viewHolder.status.setTextColor(ContextCompat.getColor(context, R.color.amber_400));
         //set the text for initials // to do elaborate!
-        if(!name.isEmpty())
-            viewHolder.initials.setText(name.substring(0,1));
+        if(!user.getName().isEmpty())
+            viewHolder.initials.setText(user.getName().substring(0,1));
     }
 
     //The viewHolder used for this item. This viewHolder is always reused by the RecyclerView so scrolling is blazing fast

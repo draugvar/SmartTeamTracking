@@ -1,18 +1,23 @@
 package draugvar.smartteamtracking.data;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.parceler.Parcel;
 import io.realm.RealmObject;
 
 @Parcel
 public class User extends RealmObject {
 
-    long ID;
+    @JsonProperty("id")
+    long uid;
     String name;
     String surname;
     String email;
     String pw;
     Double latGPS;
     Double lonGPS;
+    String authToken;
+    String facebookId;
 
     public User(){
         this.name = null;
@@ -21,31 +26,36 @@ public class User extends RealmObject {
         this.pw = null;
         this.latGPS = null;
         this.lonGPS = null;
+        this.authToken = null;
+        this.facebookId = null;
     }
 
-    public User(long ID, String name, String surname, String email, String pw, Double latGPS, Double lonGPS) {
-        this.ID = ID;
+    public User(long uid, String name, String surname, String email, String pw, Double latGPS,
+                Double lonGPS, String authToken, String facebookId) {
+        this.uid = uid;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.pw = pw;
         this.latGPS = latGPS;
         this.lonGPS = lonGPS;
+        this.authToken = authToken;
+        this.facebookId = facebookId;
     }
 
-    public User(long ID, String name, String surname, String email) {
-        this.ID = ID;
+    public User(long uid, String name, String surname, String email) {
+        this.uid = uid;
         this.name = name;
         this.surname = surname;
         this.email = email;
     }
 
-    public long getID() {
-        return ID;
+    public long getUid() {
+        return uid;
     }
 
-    public void setID(long ID) {
-        this.ID = ID;
+    public void setUid(long uid) {
+        this.uid = uid;
     }
 
     public String getName() {
@@ -94,5 +104,21 @@ public class User extends RealmObject {
 
     public void setLonGPS(Double lonGPS) {
         this.lonGPS = lonGPS;
+    }
+
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
+    }
+
+    public String getFacebookId() {
+        return facebookId;
+    }
+
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
     }
 }
