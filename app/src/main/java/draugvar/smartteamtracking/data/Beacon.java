@@ -3,34 +3,57 @@ package draugvar.smartteamtracking.data;
 import io.realm.RealmObject;
 
 public class Beacon extends RealmObject{
-    private Long id;
+    private String uuid;
+    private int major;
+    private int minor;
     private Long beaconIdentifier; //KEY
     private String name;
     private Double latBeacon;
     private Double lonBeacon;
 
     public Beacon() {
-        id = null;
+        uuid = null;
+        major = 0;
+        minor = 0;
         beaconIdentifier = null;
         name = null;
         latBeacon = null;
         lonBeacon = null;
     }
 
-    public Beacon(Long id, Long beaconIdentifier, String name, Double latBeacon, Double lonBeacon) {
-        this.id = id;
+    public Beacon(String uuid, int major, int minor, Long beaconIdentifier, String name,
+                  Double latBeacon, Double lonBeacon) {
+        this.uuid = uuid;
+        this.major = major;
+        this.minor = minor;
         this.beaconIdentifier = beaconIdentifier;
         this.name = name;
         this.latBeacon = latBeacon;
         this.lonBeacon = lonBeacon;
     }
 
-    public Long getId() {
-        return id;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public int getMajor() {
+        return major;
+    }
+
+    public void setMajor(int major) {
+        this.major = major;
+    }
+
+    public int getMinor() {
+        return minor;
+    }
+
+    public void setMinor(int minor) {
+        this.minor = minor;
     }
 
     public Long getBeaconIdentifier() {

@@ -35,7 +35,8 @@ public class SmartApplication extends Application {
                                 + "and it's a 5 minute walk from security to the gate. "
                                 + "Looks like you've got plenty of time!");*/
                 for(Beacon beacon: list){
-                    Log.d("ESTIMOTE", beacon.getProximityUUID().toString());
+                    Log.d("ESTIMOTE", beacon.getProximityUUID().toString() + " " + beacon.getMajor()
+                    + " " +  beacon.getMinor());
                 }
             }
             @Override
