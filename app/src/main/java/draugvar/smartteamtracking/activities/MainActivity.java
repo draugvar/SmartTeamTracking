@@ -61,8 +61,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(fastAdapter);
 
         // groups population
-        WorkflowManager.getWorkflowManager().setContext(getApplicationContext());
-        WorkflowManager.getWorkflowManager().setRealm();
         realm = Realm.getDefaultInstance();
         for (Group group : realm.where(Group.class).findAll()) {
             GroupItem groupItem = new GroupItem(group);

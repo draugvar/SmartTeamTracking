@@ -15,11 +15,6 @@
             android:name=".activities.MainActivity"
             android:label="Groups"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activities.CreateGroupActivity"
@@ -55,6 +50,15 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="draugvar.smartteamtracking.activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activities.SplashActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

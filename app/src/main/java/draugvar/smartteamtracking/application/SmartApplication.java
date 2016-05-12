@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 import draugvar.smartteamtracking.activities.MainActivity;
+import draugvar.smartteamtracking.singleton.WorkflowManager;
 
 public class SmartApplication extends Application {
     private BeaconManager beaconManager;
@@ -23,7 +24,10 @@ public class SmartApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        WorkflowManager.getWorkflowManager().setContext(getApplicationContext());
+        WorkflowManager.getWorkflowManager().setRealm();
 
+        // ----- Estimote Beacon set-up ----- //
         beaconManager = new BeaconManager(getApplicationContext());
 
         beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
