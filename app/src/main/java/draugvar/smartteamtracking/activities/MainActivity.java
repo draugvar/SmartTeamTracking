@@ -9,14 +9,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.estimote.sdk.BeaconManager;
+import com.estimote.sdk.Nearable;
+import com.estimote.sdk.Region;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.IItem;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
+
+import java.util.List;
+import java.util.UUID;
 
 import draugvar.smartteamtracking.R;
 import draugvar.smartteamtracking.adapter.GroupItem;
@@ -77,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                         GroupItem groupItem = (GroupItem) fastAdapter.getAdapterItem(position);
                         fastAdapter.remove(position);
                         realm.beginTransaction();
-                        realm.where(Group.class).equalTo("gID", groupItem.group.getGid()).findAll()
+                        realm.where(Group.class).equalTo("gid", groupItem.group.getGid()).findAll()
                                 .deleteFirstFromRealm();
                         realm.commitTransaction();
                         dialog.dismiss();
