@@ -20,4 +20,5 @@
     <string name="enter_zone">choose the appropriate area</string>
     <string name="nul">null</string>
     <string name="title_activity_group">GroupActivity</string>
+    <string name="facebook_app_id">1579642739001091</string>
 </resources>

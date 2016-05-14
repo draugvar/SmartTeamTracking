@@ -121,4 +121,19 @@ public class User extends RealmObject {
     public void setFacebookId(String facebookId) {
         this.facebookId = facebookId;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "uid=" + uid +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", pw='" + pw + '\'' +
+                ", latGPS=" + latGPS +
+                ", lonGPS=" + lonGPS +
+                ", authToken='" + authToken + '\'' +
+                ", facebookId='" + facebookId + '\'' +
+                '}';
+    }
 }
