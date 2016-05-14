@@ -19,9 +19,21 @@ import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.IItem;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+
 import draugvar.smartteamtracking.R;
 import draugvar.smartteamtracking.adapter.GroupItem;
+import draugvar.smartteamtracking.data.Beacon;
 import draugvar.smartteamtracking.data.Group;
+import draugvar.smartteamtracking.data.User;
+import draugvar.smartteamtracking.rest.CreateGroup;
+import draugvar.smartteamtracking.rest.GetBeacon;
+import draugvar.smartteamtracking.rest.GetGroupCount;
+import draugvar.smartteamtracking.rest.GetUsers;
+import draugvar.smartteamtracking.rest.InviteUsersToGroup;
 import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity {
@@ -109,6 +121,30 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //Testing rest calls
+
+        try {
+            new GetBeacon().execute().get();
+            new GetUsers().execute(Long.valueOf(9)).get();
+            new GetGroupCount().execute(Long.valueOf(9)).get();
+
+            Group groupRequest = new Group(0,"Group from Android",50.2,51.5,10);
+            new CreateGroup(Long.valueOf(11),groupRequest).execute().get();
+
+            List<String> fbIdList = new LinkedList<>();
+            fbIdList.add("121086071637082");
+            new InviteUsersToGroup(15l,fbIdList).execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
 
     }
 

@@ -91,4 +91,17 @@ public class Beacon extends RealmObject{
     public void setLonBeacon(Double lonBeacon) {
         this.lonBeacon = lonBeacon;
     }
+
+    @Override
+    public String toString() {
+        return "Beacon{" +
+                "uuid='" + uuid + '\'' +
+                ", major=" + major +
+                ", minor=" + minor +
+                ", beaconIdentifier=" + beaconIdentifier +
+                ", name='" + name + '\'' +
+                ", latBeacon=" + latBeacon +
+                ", lonBeacon=" + lonBeacon +
+                '}';
+    }
 }

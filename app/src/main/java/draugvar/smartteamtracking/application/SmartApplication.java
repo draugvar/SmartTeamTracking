@@ -19,6 +19,8 @@ import draugvar.smartteamtracking.singleton.WorkflowManager;
 
 public class SmartApplication extends Application {
     private BeaconManager beaconManager;
+    public static final String serverPath = "http://amaca.ga:8080";
+
 
     @Override
     public void onCreate() {
