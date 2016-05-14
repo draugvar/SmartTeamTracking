@@ -29,6 +29,7 @@ import draugvar.smartteamtracking.adapter.GroupItem;
 import draugvar.smartteamtracking.data.Beacon;
 import draugvar.smartteamtracking.data.Group;
 import draugvar.smartteamtracking.data.User;
+import draugvar.smartteamtracking.rest.AddInRange;
 import draugvar.smartteamtracking.rest.CreateGroup;
 import draugvar.smartteamtracking.rest.GetBeacon;
 import draugvar.smartteamtracking.rest.GetGroupCount;
@@ -130,16 +131,17 @@ public class MainActivity extends AppCompatActivity {
         //Testing rest calls
 
         try {
-            new GetBeacon().execute().get();
-            new GetUsers().execute(Long.valueOf(9)).get();
-            new GetGroupCount().execute(Long.valueOf(9)).get();
+            //new GetBeacon().execute().get();
+            //new GetUsers().execute(Long.valueOf(9)).get();
+            //new GetGroupCount().execute(Long.valueOf(9)).get();
 
-            Group groupRequest = new Group(0,"Group from Android",50.2,51.5,10);
-            new CreateGroup(Long.valueOf(11),groupRequest).execute().get();
+            //Group groupRequest = new Group(0,"Group from Android",50.2,51.5,10);
+            //new CreateGroup(Long.valueOf(11),groupRequest).execute().get();
 
-            List<String> fbIdList = new LinkedList<>();
-            fbIdList.add("121086071637082");
-            new InviteUsersToGroup(15l,fbIdList).execute().get();
+            //List<String> fbIdList = new LinkedList<>();
+            //fbIdList.add("121086071637082"); WE DON'T HAVE THIS USER ANYMORE. RESTARTED DB
+            //new InviteUsersToGroup(15l,fbIdList).execute().get();
+            new AddInRange(0l,777,2).execute().get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
