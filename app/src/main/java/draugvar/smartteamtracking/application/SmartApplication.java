@@ -11,13 +11,10 @@ import android.util.Log;
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 
 import java.util.List;
-import java.util.UUID;
 
-import draugvar.smartteamtracking.activities.MainActivity;
+import draugvar.smartteamtracking.activity.MainActivity;
 import draugvar.smartteamtracking.singleton.WorkflowManager;
 
 public class SmartApplication extends Application {

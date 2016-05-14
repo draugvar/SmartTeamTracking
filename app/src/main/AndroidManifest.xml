@@ -19,26 +19,26 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activity.MainActivity"
             android:label="Groups"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name=".activities.CreateGroupActivity"
+            android:name=".activity.CreateGroupActivity"
             android:label="@string/title_activity_home"
-            android:parentActivityName=".activities.FriendsActivity"
+            android:parentActivityName=".activity.FriendsActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.FriendsActivity" />
+                android:value=".activity.FriendsActivity" />
         </activity>
         <activity
-            android:name=".activities.FriendsActivity"
+            android:name=".activity.FriendsActivity"
             android:label="@string/title_activity_friends"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
 
         <meta-data
@@ -49,16 +49,16 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".activities.GroupActivity"
+            android:name=".activity.GroupActivity"
             android:label="@string/title_activity_group"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="draugvar.smartteamtracking.activities.MainActivity" />
+                android:value="draugvar.smartteamtracking.activity.MainActivity" />
         </activity>
         <activity
-            android:name=".activities.SplashActivity"
+            android:name=".activity.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -76,7 +76,7 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".activities.LoginActivity"/>
+        <activity android:name=".activity.LoginActivity"/>
     </application>
 
 </manifest>

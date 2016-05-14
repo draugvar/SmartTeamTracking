@@ -1,4 +1,4 @@
-package draugvar.smartteamtracking.activities;
+package draugvar.smartteamtracking.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;

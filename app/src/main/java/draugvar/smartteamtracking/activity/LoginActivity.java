@@ -1,4 +1,4 @@
-package draugvar.smartteamtracking.activities;
+package draugvar.smartteamtracking.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -12,26 +12,19 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import draugvar.smartteamtracking.R;
 import draugvar.smartteamtracking.data.User;
-import draugvar.smartteamtracking.rest_async_tasks.AuthOrSignupUser;
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.RealmList;
+import draugvar.smartteamtracking.rest.AuthOrSignupUser;
 
 public class LoginActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
@@ -44,6 +37,9 @@ public class LoginActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         // Facebook Login button
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+
+        Log.d("LoginTask","Inside onCreate of LoginActivity");
+
 
         // Request Permissions to read data from profile
         assert loginButton != null;
@@ -60,30 +56,36 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(final LoginResult loginResult) {
-                GraphRequest request = GraphRequest.newMeRequest(
+                final GraphRequest request = GraphRequest.newMeRequest(
                         AccessToken.getCurrentAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {
                             @Override
                             public void onCompleted(final JSONObject object, GraphResponse response) {
                                 try {
-                                    // doing something shish for server
+                                    // Data received from server
                                     String token = loginResult.getAccessToken().getToken();
                                     String id = object.getString("id");
                                     String name = object.getString("first_name");
                                     String surname = object.getString("last_name");
                                     String mail = object.getString("email");
-                                    Log.d("LoginActivity", token + " | " + id + " | " + name
+                                    Log.d("LoginTask", token + " | " + id + " | " + name
                                             + " | " + surname + " | " + mail);
 
+                                    User requestUser = new User();
+                                    requestUser.setAuthToken(token);
+                                    requestUser.setFacebookId(id);
+                                    requestUser.setName(name);
+                                    requestUser.setSurname(surname);
+                                    requestUser.setEmail(mail);
 
-                                    Realm realm = Realm.getDefaultInstance();
-                                    User user = new User();
-                                    user.setFacebookId(id);
-                                    user.setName(name);
-                                    user.setSurname(surname);
-                                    user.setEmail(mail);
-                                    //new AuthOrSignupUser().execute(user);
+                                    User responseUser = new  AuthOrSignupUser().execute(requestUser).get();
+                                    Log.d("LoginTask","Returned from rest call: "+ responseUser.toString());
+
                                 } catch (JSONException e) {
+                                    e.printStackTrace();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                } catch (ExecutionException e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -134,13 +136,13 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onCancel() {
                 System.out.println("onCancel");
-                Log.d("LoginActivity", "onCancel");
+                Log.d("LoginTask", "LoginActivity onCancel");
             }
 
             @Override
             public void onError(FacebookException exception) {
-                System.out.println("onError");
-                Log.d("LoginActivity", exception.getCause().toString());
+                System.out.println("LoginActivity onError");
+                Log.d("LoginTask", exception.getCause().toString());
             }
         });
 

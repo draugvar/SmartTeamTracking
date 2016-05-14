@@ -1,4 +1,4 @@
-package draugvar.smartteamtracking.activities;
+package draugvar.smartteamtracking.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,21 +14,14 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.estimote.sdk.BeaconManager;
-import com.estimote.sdk.Nearable;
-import com.estimote.sdk.Region;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.IItem;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 
-import java.util.List;
-import java.util.UUID;
-
 import draugvar.smartteamtracking.R;
 import draugvar.smartteamtracking.adapter.GroupItem;
 import draugvar.smartteamtracking.data.Group;
-import draugvar.smartteamtracking.singleton.WorkflowManager;
 import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Log.d("LoginTask","Inside onCreate of MainActivity");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;
@@ -114,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
     }
 
     @Override

@@ -1,4 +1,4 @@
-package draugvar.smartteamtracking.rest_async_tasks;
+package draugvar.smartteamtracking.rest;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -14,6 +14,7 @@ public class AuthOrSignupUser extends AsyncTask<User, Void, User> {
         try {
 
             User user = params[0];
+            Log.d("LoginTask","Input user for rest call is: "+user.toString());
             final String url = "http://amaca.ga:8080/user?token=" + user.getAuthToken()+
                                 "&facebookId="+user.getFacebookId()+"&name="+user.getName()+
                                 "&surname="+user.getSurname()+"&email="+user.getEmail();
@@ -22,11 +23,11 @@ public class AuthOrSignupUser extends AsyncTask<User, Void, User> {
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
             User userFromServer = restTemplate.getForObject(url, User.class);
-            Log.d("rest", userFromServer.toString());
+            Log.d("LoginTask", userFromServer.toString());
             return userFromServer;
 
         } catch (Exception e) {
-            Log.e("MainActivity", e.getMessage(), e);
+            Log.e("LoginTask", e.getMessage(), e);
             return null;
         }
     }

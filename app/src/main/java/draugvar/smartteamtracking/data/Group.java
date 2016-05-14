@@ -7,6 +7,7 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+
 public class Group extends RealmObject {
 
     @JsonProperty("id")

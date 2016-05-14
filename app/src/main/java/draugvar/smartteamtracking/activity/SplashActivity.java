@@ -1,4 +1,4 @@
-package draugvar.smartteamtracking.activities;
+package draugvar.smartteamtracking.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -28,6 +28,8 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         FacebookSdk.sdkInitialize(getApplicationContext());
+        Log.d("LoginTask","Inside onCreate of SplashActivity");
+
 
         // Add code to print out the key hash
         try {

@@ -1,11 +1,14 @@
 package draugvar.smartteamtracking.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.parceler.Parcel;
 import io.realm.RealmObject;
 
 @Parcel
+@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class User extends RealmObject {
 
     @JsonProperty("id")
@@ -13,7 +16,6 @@ public class User extends RealmObject {
     String name;
     String surname;
     String email;
-    String pw;
     Double latGPS;
     Double lonGPS;
     String authToken;
@@ -23,20 +25,18 @@ public class User extends RealmObject {
         this.name = null;
         this.surname = null;
         this.email = null;
-        this.pw = null;
         this.latGPS = null;
         this.lonGPS = null;
         this.authToken = null;
         this.facebookId = null;
     }
 
-    public User(long uid, String name, String surname, String email, String pw, Double latGPS,
+    public User(long uid, String name, String surname, String email, Double latGPS,
                 Double lonGPS, String authToken, String facebookId) {
         this.uid = uid;
         this.name = name;
         this.surname = surname;
         this.email = email;
-        this.pw = pw;
         this.latGPS = latGPS;
         this.lonGPS = lonGPS;
         this.authToken = authToken;
@@ -82,14 +82,6 @@ public class User extends RealmObject {
         this.email = email;
     }
 
-    public String getPw() {
-        return pw;
-    }
-
-    public void setPw(String pw) {
-        this.pw = pw;
-    }
-
     public Double getLatGPS() {
         return latGPS;
     }
@@ -129,7 +121,6 @@ public class User extends RealmObject {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
-                ", pw='" + pw + '\'' +
                 ", latGPS=" + latGPS +
                 ", lonGPS=" + lonGPS +
                 ", authToken='" + authToken + '\'' +

@@ -1,4 +1,4 @@
-package draugvar.smartteamtracking.activities;
+package draugvar.smartteamtracking.activity;
 
 import android.Manifest;
 import android.content.Context;
