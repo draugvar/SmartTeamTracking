@@ -9,10 +9,10 @@ import com.mikepenz.fastadapter.items.AbstractItem;
 import draugvar.smartteamtracking.R;
 import draugvar.smartteamtracking.data.Group;
 
-public class GroupItem extends AbstractItem<GroupItem, GroupItem.ViewHolder> {
+public class PendingGroupItem extends AbstractItem<PendingGroupItem, PendingGroupItem.ViewHolder> {
     public Group group;
 
-    public GroupItem(Group group){
+    public PendingGroupItem(Group group){
         this.group = group;
     }
 

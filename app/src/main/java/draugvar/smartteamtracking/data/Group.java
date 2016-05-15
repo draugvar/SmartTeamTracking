@@ -17,6 +17,7 @@ public class Group extends RealmObject {
     private Double lonCenter;
     private int radius;
     private RealmList<User> users;
+    private RealmList<User> pending;
 
     public Group(){
         this.name = null;
@@ -86,7 +87,19 @@ public class Group extends RealmObject {
         return users;
     }
 
+    public void addPending(User user){
+        pending.add(user);
+    }
+
+    public void removePending(User user){
+        pending.remove(user);
+    }
+
+    public RealmList<User> getPending() {
+        return pending;
+    }
+
     public int countUsers(){
-        return users.size();
+        return users.size() + pending.size();
     }
 }

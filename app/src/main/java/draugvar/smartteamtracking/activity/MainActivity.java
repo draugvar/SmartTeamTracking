@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 
 import draugvar.smartteamtracking.R;
 import draugvar.smartteamtracking.adapter.GroupItem;
+import draugvar.smartteamtracking.adapter.PendingGroupItem;
 import draugvar.smartteamtracking.data.Beacon;
 import draugvar.smartteamtracking.data.Group;
 import draugvar.smartteamtracking.data.Myself;
@@ -118,11 +119,48 @@ public class MainActivity extends AppCompatActivity {
         // ----- FASTADAPTER -- OnCLickListener ------
         fastAdapter.withOnClickListener(new FastAdapter.OnClickListener() {
             @Override
-            public boolean onClick(View v, IAdapter adapter, IItem item, int position) {
-                GroupItem groupItem = (GroupItem) item;
-                Intent intent = new Intent(getApplicationContext(), GroupActivity.class);
-                intent.putExtra("gid", groupItem.group.getGid());
-                startActivity(intent);
+            public boolean onClick(View v, IAdapter adapter, IItem item, final int position) {
+                if(item instanceof PendingGroupItem){
+                    final PendingGroupItem pendingGroupItem = (PendingGroupItem) item;
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+
+                    builder.setTitle("Do you want to join this group?");
+                    builder.setMessage("Are you sure?");
+
+                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Do nothing but close the dialog
+                            GroupItem groupItem = new GroupItem(pendingGroupItem.group);
+                            fastAdapter.add(-1, groupItem);
+                            fastAdapter.remove(position);
+                            realm.beginTransaction();
+                            realm.where(Group.class).equalTo("gid", groupItem.group.getGid()).findAll()
+                                    .deleteFirstFromRealm();
+                            realm.commitTransaction();
+                            dialog.dismiss();
+                        }
+
+                    });
+
+                    builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Do nothing
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+                } else if(item instanceof GroupItem) {
+                    GroupItem groupItem = (GroupItem) item;
+                    Intent intent = new Intent(getApplicationContext(), GroupActivity.class);
+                    intent.putExtra("gid", groupItem.group.getGid());
+                    startActivity(intent);
+                }
                 return true;
             }
         });
