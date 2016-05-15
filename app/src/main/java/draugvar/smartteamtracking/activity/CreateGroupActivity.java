@@ -147,18 +147,20 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.accept_group) {
-            String g_name = group_name.getText().toString();
+            //THIS NEEDS TO MAKE REST CALLS!!!
+            /*String g_name = group_name.getText().toString();
             realm.beginTransaction();
-            Group mGroup = realm.createObject(Group.class);
+            //Group mGroup = realm.createObject(Group.class);
+            Group mGroup = new Group();
             mGroup.setName(g_name);
             mGroup.setGid(0);
             ArrayList<User> users = Parcels.unwrap(getIntent().getParcelableExtra("users"));
             for(User u: users){
                 mGroup.addUser(u);
             }
-            realm.commitTransaction();
+            //realm.commitTransaction();
             Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            startActivity(intent);*/
         }
 
         return super.onOptionsItemSelected(item);

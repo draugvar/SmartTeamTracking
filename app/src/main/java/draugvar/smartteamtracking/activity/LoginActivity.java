@@ -92,7 +92,9 @@ public class LoginActivity extends AppCompatActivity {
                                     User realmResponseUser = realm.copyToRealm(responseUser);
                                     myself.setUser(realmResponseUser);
                                     realm.commitTransaction();
-                                    //WorkflowManager.getWorkflowManager().setMyself(myself);
+
+                                    //Reference to usedId in the WorkflowManager, useful for rest calls
+                                    WorkflowManager.getWorkflowManager().setMyselfId(responseUser.getUid());
 
                                 } catch (JSONException | InterruptedException | ExecutionException e) {
                                     e.printStackTrace();

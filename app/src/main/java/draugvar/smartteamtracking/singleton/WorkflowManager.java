@@ -21,6 +21,8 @@ public class WorkflowManager {
     private List<User> userList = new LinkedList<User>(); // FRIENDS LIST
     private List<Group> groupList = new LinkedList<Group>(); // SHOULD MAKE LIST THREAD SAFE
 
+    private Long myselfId;
+
     private Context context;
 
     private WorkflowManager() {}
@@ -49,5 +51,13 @@ public class WorkflowManager {
 
     public void setRealm(){
         Realm.setDefaultConfiguration( new RealmConfiguration.Builder(context).build());
+    }
+
+    public Long getMyselfId() {
+        return myselfId;
+    }
+
+    public void setMyselfId(Long myselfId) {
+        this.myselfId = myselfId;
     }
 }

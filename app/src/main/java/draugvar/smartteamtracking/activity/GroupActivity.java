@@ -41,12 +41,14 @@ public class GroupActivity extends AppCompatActivity implements OnMapReadyCallba
         assert recyclerView != null;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(fastAdapter);
-        Realm realm = Realm.getDefaultInstance();
+
+        //NEEDS TO BE POPULATED WITH REST CALLS!
+        /*Realm realm = Realm.getDefaultInstance();
         long gid = getIntent().getLongExtra("gid", 0);
         Group group = realm.where(Group.class).equalTo("gid", gid).findFirst();
         for(User user: group.getUsers()){
             fastAdapter.add(new FriendItem(user));
-        }
+        }*/
     }
 
     @Override

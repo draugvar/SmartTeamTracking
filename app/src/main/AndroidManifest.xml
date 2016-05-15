@@ -21,7 +21,7 @@
         <activity
             android:name=".activity.MainActivity"
             android:label="Groups"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.CreateGroupActivity"
             android:label="@string/title_activity_home"
@@ -76,7 +76,8 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".activity.LoginActivity"/>
+        <activity android:name=".activity.LoginActivity" />
+
     </application>
 
 </manifest>

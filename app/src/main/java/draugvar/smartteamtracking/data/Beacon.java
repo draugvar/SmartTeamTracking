@@ -9,13 +9,13 @@ import io.realm.RealmObject;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Parcel
 public class Beacon extends RealmObject{
-    private String uuid;
-    private int major;
-    private int minor;
-    private Long beaconIdentifier; //KEY
-    private String name;
-    private Double latBeacon;
-    private Double lonBeacon;
+    String uuid;
+    int major;
+    int minor;
+    Long beaconIdentifier; //KEY
+    String name;
+    Double latBeacon;
+    Double lonBeacon;
 
     public Beacon() {
         uuid = null;

@@ -21,6 +21,7 @@ import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.IItem;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -38,6 +39,8 @@ import draugvar.smartteamtracking.rest.AddInRange;
 import draugvar.smartteamtracking.rest.CreateGroup;
 import draugvar.smartteamtracking.rest.GetBeacon;
 import draugvar.smartteamtracking.rest.GetGroupCount;
+import draugvar.smartteamtracking.rest.GetGroupsOfUsers;
+import draugvar.smartteamtracking.rest.GetPendingGroupsOfUsers;
 import draugvar.smartteamtracking.rest.GetUsers;
 import draugvar.smartteamtracking.rest.InviteUsersToGroup;
 import draugvar.smartteamtracking.rest.RemovePending;
@@ -46,6 +49,7 @@ import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity {
     private Realm realm;
+    private FastItemAdapter fastAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +57,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        this.realm = Realm.getDefaultInstance();
 
         Log.d("LoginTask", "Inside onCreate of MainActivity");
 
+        //Init fab
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
@@ -65,8 +71,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        //create our FastAdapter which will manage everything
-        final FastItemAdapter fastAdapter = new FastItemAdapter();
+
+        //init our FastAdapter which will manage everything
+        fastAdapter = new FastItemAdapter();
 
         //set our adapters to the RecyclerView
         //we wrap our FastAdapter inside the ItemAdapter -> This allows us to chain adapters for more complex useCases
@@ -75,13 +82,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(fastAdapter);
 
-        // groups population
-        realm = Realm.getDefaultInstance();
-        for (Group group : realm.where(Group.class).findAll()) {
-            GroupItem groupItem = new GroupItem(group);
-            fastAdapter.add(groupItem);
-        }
-        // ----- FASTADAPTER -- OnLongCLickListener -----
+        // ----- fastAdapter -- OnLongCLickListener -----
         fastAdapter.withOnLongClickListener(new FastAdapter.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v, IAdapter adapter, IItem item, final int position) {
@@ -96,10 +97,14 @@ public class MainActivity extends AppCompatActivity {
                         // Do nothing but close the dialog
                         GroupItem groupItem = (GroupItem) fastAdapter.getAdapterItem(position);
                         fastAdapter.remove(position);
+
+                        /*  NO MORE REALM. TO BE DISCUSSED!
                         realm.beginTransaction();
                         realm.where(Group.class).equalTo("gid", groupItem.group.getGid()).findAll()
                                 .deleteFirstFromRealm();
                         realm.commitTransaction();
+                        */
+
                         dialog.dismiss();
                     }
                 });
@@ -117,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-        // ----- FASTADAPTER -- OnCLickListener ------
+        // ----- fastAdapter -- OnCLickListener ------
         fastAdapter.withOnClickListener(new FastAdapter.OnClickListener() {
             @Override
             public boolean onClick(View v, IAdapter adapter, IItem item, final int position) {
@@ -167,6 +172,39 @@ public class MainActivity extends AppCompatActivity {
         });
         Myself myself = realm.where(Myself.class).findFirst();
         Log.d("MainActivity",myself.getUser().toString());
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Long myselfId = WorkflowManager.getWorkflowManager().getMyselfId();
+        List<Group> groupList =null;
+        List<Group> groupPendingList = null;
+
+        // update with current groups and pending groups
+        try {
+            groupList = new GetGroupsOfUsers(myselfId).execute().get();
+            groupPendingList = new GetPendingGroupsOfUsers(myselfId).execute().get();
+        } catch (InterruptedException e) {
+            Log.d("Rest","MainActivity - onResume - Cannot retrieve groupList or groupPendingList ");
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            Log.d("Rest","MainActivity - onResume - Cannot retrieve groupList or groupPendingList ");
+            e.printStackTrace();;
+        }
+
+        for(Group group: groupList){
+            GroupItem groupItem = new GroupItem(group);
+            if(!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
+                fastAdapter.add(groupItem);
+        }
+
+        for(Group group: groupPendingList){
+            GroupItem groupItem = new GroupItem(group);
+            if(!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
+                fastAdapter.add(0,groupItem);
+        }
     }
 
     @Override

@@ -74,6 +74,9 @@ public class SplashActivity extends AppCompatActivity {
                     try {
                         User responseUser = new AuthOrSignupUser().execute(realm.copyFromRealm(user)).get();
                         if(responseUser != null) {
+                            //Reference to usedId in the WorkflowManager, useful for rest calls
+                            WorkflowManager.getWorkflowManager().setMyselfId(responseUser.getUid());
+
                             realm.beginTransaction();
                             User userForRealm = realm.copyToRealm(responseUser);
                             myself.setUser(userForRealm);

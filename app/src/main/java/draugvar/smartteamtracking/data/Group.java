@@ -1,5 +1,7 @@
 package draugvar.smartteamtracking.data;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,7 +12,7 @@ import io.realm.RealmObject;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 
-public class Group extends RealmObject {
+public class Group{
 
     @JsonProperty("id")
     private long gid;
@@ -18,6 +20,7 @@ public class Group extends RealmObject {
     private Double latCenter;
     private Double lonCenter;
     private int radius;
+    @JsonProperty("contains")
     private List<User> users;
     private List<User> pending;
 
@@ -100,6 +103,40 @@ public class Group extends RealmObject {
     }
 
     public int countUsers(){
-        return users.size() + pending.size();
+        int total = 0;
+        if(users != null)
+            total+=users.size();
+        if(pending != null)
+            total+=pending.size();
+        return total;
+    }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "gid=" + gid +
+                ", name='" + name + '\'' +
+                ", latCenter=" + latCenter +
+                ", lonCenter=" + lonCenter +
+                ", radius=" + radius +
+                ", users=" + users +
+                ", pending=" + pending +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Group group = (Group) o;
+
+        return gid == group.gid;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (gid ^ (gid >>> 32));
     }
 }

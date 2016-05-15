@@ -56,4 +56,23 @@ public class GroupItem extends AbstractItem<GroupItem, GroupItem.ViewHolder> {
             this.num_users = (TextView) view.findViewById(R.id.num_users);
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        GroupItem groupItem = (GroupItem) o;
+
+        return group != null ? group.equals(groupItem.group) : groupItem.group == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (group != null ? group.hashCode() : 0);
+        return result;
+    }
 }
