@@ -23,6 +23,7 @@ import draugvar.smartteamtracking.data.User;
 import draugvar.smartteamtracking.rest.AuthOrSignupUser;
 import draugvar.smartteamtracking.singleton.WorkflowManager;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 public class SplashActivity extends AppCompatActivity {
     // Splash screen timer
@@ -33,10 +34,10 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        Realm.setDefaultConfiguration( new RealmConfiguration.Builder(this).build());
+
         FacebookSdk.sdkInitialize(getApplicationContext());
         Log.d("LoginTask","Inside onCreate of SplashActivity");
-
-        final Realm realm = Realm.getDefaultInstance();
 
         // Add code to print out the key hash
         try {
@@ -63,16 +64,21 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 // This method will be executed once the timer is over
                 // Start your app main activity
+                Realm realm = Realm.getDefaultInstance();
                 if(AccessToken.getCurrentAccessToken() == null) {
                     Intent i = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(i);
                 } else {
-                    Myself myself = WorkflowManager.getWorkflowManager().getMyself();
+                    Myself myself = realm.where(Myself.class).findFirst();
+                    User user = myself.getUser();
                     try {
-                        User responseUser = new AuthOrSignupUser().execute(myself.getUser()).get();
-                        realm.beginTransaction();
-                        myself.setUser(responseUser);
-                        realm.commitTransaction();
+                        User responseUser = new AuthOrSignupUser().execute(realm.copyFromRealm(user)).get();
+                        if(responseUser != null) {
+                            realm.beginTransaction();
+                            User userForRealm = realm.copyToRealm(responseUser);
+                            myself.setUser(userForRealm);
+                            realm.commitTransaction();
+                        }
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }

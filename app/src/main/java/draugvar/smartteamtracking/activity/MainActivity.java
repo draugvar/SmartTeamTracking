@@ -28,6 +28,7 @@ import draugvar.smartteamtracking.R;
 import draugvar.smartteamtracking.adapter.GroupItem;
 import draugvar.smartteamtracking.data.Beacon;
 import draugvar.smartteamtracking.data.Group;
+import draugvar.smartteamtracking.data.Myself;
 import draugvar.smartteamtracking.data.User;
 import draugvar.smartteamtracking.rest.AddInRange;
 import draugvar.smartteamtracking.rest.CreateGroup;
@@ -123,31 +124,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-        Log.d("MainActivity",WorkflowManager.getWorkflowManager().getMyself().getUser().toString());
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        //Testing rest calls
-
-        try {
-            //new GetBeacon().execute().get();
-            //new GetUsers().execute(Long.valueOf(9)).get();
-            //new GetGroupCount().execute(Long.valueOf(9)).get();
-
-            //Group groupRequest = new Group(0,"Group from Android",50.2,51.5,10);
-            //new CreateGroup(Long.valueOf(11),groupRequest).execute().get();
-
-            //List<String> fbIdList = new LinkedList<>();
-            //fbIdList.add("121086071637082"); WE DON'T HAVE THIS USER ANYMORE. RESTARTED DB
-            //new InviteUsersToGroup(15l,fbIdList).execute().get();
-            new AddInRange(0L,777,2).execute().get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-
+        Myself myself = realm.where(Myself.class).findFirst();
+        Log.d("MainActivity",myself.getUser().toString());
     }
 
     @Override

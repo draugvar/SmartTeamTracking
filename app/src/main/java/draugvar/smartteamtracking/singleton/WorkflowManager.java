@@ -28,11 +28,14 @@ public class WorkflowManager {
     public static synchronized WorkflowManager getWorkflowManager() {
         if (instance == null) {
             instance = new WorkflowManager();
+            instance.myself = null;
         }
         return instance;
     }
 
     public Myself getMyself() {
+        if(myself == null)
+            myself = Realm.getDefaultInstance().where(Myself.class).findFirst();
         return myself;
     }
 

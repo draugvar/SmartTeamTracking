@@ -87,9 +87,10 @@ public class LoginActivity extends AppCompatActivity {
                                     Log.d("LoginTask","Returned from rest call: "+ responseUser.toString());
                                     realm.beginTransaction();
                                     Myself myself = realm.createObject(Myself.class);
-                                    myself.setUser(responseUser);
+                                    User realmResponseUser = realm.copyToRealm(responseUser);
+                                    myself.setUser(realmResponseUser);
                                     realm.commitTransaction();
-                                    WorkflowManager.getWorkflowManager().setMyself(myself);
+                                    //WorkflowManager.getWorkflowManager().setMyself(myself);
 
                                 } catch (JSONException | InterruptedException | ExecutionException e) {
                                     e.printStackTrace();
