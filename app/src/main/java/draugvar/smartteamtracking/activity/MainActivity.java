@@ -141,10 +141,8 @@ public class MainActivity extends AppCompatActivity {
             //List<String> fbIdList = new LinkedList<>();
             //fbIdList.add("121086071637082"); WE DON'T HAVE THIS USER ANYMORE. RESTARTED DB
             //new InviteUsersToGroup(15l,fbIdList).execute().get();
-            new AddInRange(0l,777,2).execute().get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+            new AddInRange(0L,777,2).execute().get();
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
 

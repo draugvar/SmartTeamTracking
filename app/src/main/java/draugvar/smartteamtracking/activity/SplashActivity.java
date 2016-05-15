@@ -15,8 +15,11 @@ import com.facebook.FacebookSdk;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.ExecutionException;
 
 import draugvar.smartteamtracking.R;
+import draugvar.smartteamtracking.data.Myself;
+import draugvar.smartteamtracking.data.User;
 import draugvar.smartteamtracking.rest.AuthOrSignupUser;
 import draugvar.smartteamtracking.singleton.WorkflowManager;
 
@@ -62,7 +65,13 @@ public class SplashActivity extends AppCompatActivity {
                     Intent i = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(i);
                 } else {
-
+                    Myself myself = WorkflowManager.getWorkflowManager().getMyself();
+                    try {
+                        User responseUser = new AuthOrSignupUser().execute(myself.getUser()).get();
+                        myself.setUser(responseUser);
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
                     Intent i = new Intent(SplashActivity.this, MainActivity.class);
                     startActivity(i);
                 }

@@ -23,11 +23,15 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 import draugvar.smartteamtracking.R;
+import draugvar.smartteamtracking.data.Myself;
 import draugvar.smartteamtracking.data.User;
 import draugvar.smartteamtracking.rest.AuthOrSignupUser;
+import draugvar.smartteamtracking.singleton.WorkflowManager;
+import io.realm.Realm;
 
 public class LoginActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
+    private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Log.d("LoginTask","Inside onCreate of LoginActivity");
 
+        realm = Realm.getDefaultInstance();
 
         // Request Permissions to read data from profile
         assert loginButton != null;
@@ -80,53 +85,24 @@ public class LoginActivity extends AppCompatActivity {
 
                                     User responseUser = new  AuthOrSignupUser().execute(requestUser).get();
                                     Log.d("LoginTask","Returned from rest call: "+ responseUser.toString());
+                                    realm.beginTransaction();
+                                    Myself myself = realm.createObject(Myself.class);
+                                    myself.setUser(responseUser);
+                                    realm.commitTransaction();
+                                    WorkflowManager.getWorkflowManager().setMyself(myself);
 
                                 } catch (JSONException | InterruptedException | ExecutionException e) {
                                     e.printStackTrace();
                                 }
+                                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(i);
+                                finish();
                             }
                         });
                 Bundle parameters = new Bundle();
                 parameters.putString("fields", "id, first_name, last_name, picture, email");
                 request.setParameters(parameters);
                 request.executeAsync();
-
-                /*GraphRequest friend_request = GraphRequest.newMyFriendsRequest(
-                        AccessToken.getCurrentAccessToken(),
-                        new GraphRequest.GraphJSONArrayCallback() {
-                            @Override
-                            public void onCompleted(JSONArray objects, GraphResponse response) {
-
-                                ObjectMapper objectMapper = new ObjectMapper();
-
-                                RealmList<User> realm_friends = new RealmList<>();
-                                realm.copyToRealm(realm_friends);
-
-                                try {
-                                    realm.beginTransaction();
-                                    List<User> friends = objectMapper
-                                            .readValue(objects.toString(),
-                                                    objectMapper.getTypeFactory().constructCollectionType(List.class, User.class));
-                                    realm_friends.addAll(friends);
-                                    realm.commitTransaction();
-                                } catch(IOException e) {
-                                    e.printStackTrace();
-                                }
-                                realm.beginTransaction();
-                                user.set(realm_friends);
-                                realm.commitTransaction();
-                            }
-                        });
-                Bundle param = new Bundle();
-                param.putString("fields", "id, name");
-                friend_request.setParameters(param);
-                friend_request.executeAsync();*/
-
-                //new HttpRequestTask().execute();
-
-                Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(i);
-                finish();
             }
 
             @Override
