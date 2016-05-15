@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
 import com.facebook.AccessToken;
@@ -34,7 +36,7 @@ import draugvar.smartteamtracking.adapter.FriendItem;
 import draugvar.smartteamtracking.data.User;
 
 public class FriendsActivity extends AppCompatActivity {
-    private EditText editText;
+    private AutoCompleteTextView editText;
     private ArrayList<User> users = new ArrayList<User>();
 
     @Override
@@ -45,7 +47,7 @@ public class FriendsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        editText = (EditText) findViewById(R.id.edit_text_friend);
+        editText = (AutoCompleteTextView) findViewById(R.id.edit_text_friend);
 
         //create our FastAdapter which will manage everything
         final FastItemAdapter<FriendItem> fastAdapter = new FastItemAdapter<>();
@@ -104,6 +106,13 @@ public class FriendsActivity extends AppCompatActivity {
                 users.add(0, user);
             }
         });
+
+        // Friends list
+        String[] countries;
+        // Create the adapter and set it to the AutoCompleteTextView
+        //ArrayAdapter<String> adapter =
+                //new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, countries);
+        //textView.setAdapter(adapter);
     }
 
     @Override
@@ -131,8 +140,8 @@ public class FriendsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private ArrayList<String> getFriends() {
-        final ArrayList<String> friends_list = new ArrayList<>();
+    private ArrayList<String[]> getFriends() {
+        final ArrayList<String[]> friends_list = new ArrayList<>();
 
         GraphRequest friend_request = GraphRequest.newMyFriendsRequest(
                 AccessToken.getCurrentAccessToken(),
@@ -147,10 +156,8 @@ public class FriendsActivity extends AppCompatActivity {
                                 String id = friend.getString("id");
                                 String name = friend.getString("first_name");
                                 String surname = friend.getString("last_name");
-
-                                friends_list.add(id);
-                                friends_list.add(name);
-                                friends_list.add(surname);
+                                String[] fields = {id, name, surname};
+                                friends_list.add(fields);
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -165,6 +172,4 @@ public class FriendsActivity extends AppCompatActivity {
 
         return friends_list;
     }
-
-
 }
