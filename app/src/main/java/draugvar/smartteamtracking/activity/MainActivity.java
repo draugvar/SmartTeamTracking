@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.estimote.sdk.BeaconManager;
+import com.estimote.sdk.Region;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.IItem;
@@ -148,5 +150,40 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void setBeaconManager(){
+        final BeaconManager beaconManager;
+        // ----- Estimote Beacon set-up ----- //
+        beaconManager = new BeaconManager(getApplicationContext());
+
+        beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
+            @Override
+            public void onEnteredRegion(Region region, List<com.estimote.sdk.Beacon> list) {
+                /*showNotification(
+                        "Your gate closes in 47 minutes.",
+                        "Current security wait time is 15 minutes, "
+                                + "and it's a 5 minute walk from security to the gate. "
+                                + "Looks like you've got plenty of time!");*/
+                for(com.estimote.sdk.Beacon beacon: list){
+                    Log.d("ESTIMOTE", beacon.getProximityUUID().toString() + " " + beacon.getMajor()
+                            + " " +  beacon.getMinor());
+                }
+            }
+            @Override
+            public void onExitedRegion(Region region) {
+                // could add an "exit" notification too if you want (-:
+            }
+        });
+
+        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+            @Override
+            public void onServiceReady() {
+                beaconManager.startMonitoring(new Region(
+                        "monitored region",
+                        null, // UUID
+                        null, null)); // Major, Minor
+            }
+        });
     }
 }

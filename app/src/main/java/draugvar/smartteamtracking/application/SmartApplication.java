@@ -18,7 +18,6 @@ import draugvar.smartteamtracking.activity.MainActivity;
 import draugvar.smartteamtracking.singleton.WorkflowManager;
 
 public class SmartApplication extends Application {
-    private BeaconManager beaconManager;
     public static final String serverPath = "http://amaca.ga:8080";
 
 
@@ -27,38 +26,6 @@ public class SmartApplication extends Application {
         super.onCreate();
         WorkflowManager.getWorkflowManager().setContext(getApplicationContext());
         WorkflowManager.getWorkflowManager().setRealm();
-
-        // ----- Estimote Beacon set-up ----- //
-        beaconManager = new BeaconManager(getApplicationContext());
-
-        beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
-            @Override
-            public void onEnteredRegion(Region region, List<Beacon> list) {
-                /*showNotification(
-                        "Your gate closes in 47 minutes.",
-                        "Current security wait time is 15 minutes, "
-                                + "and it's a 5 minute walk from security to the gate. "
-                                + "Looks like you've got plenty of time!");*/
-                for(Beacon beacon: list){
-                    Log.d("ESTIMOTE", beacon.getProximityUUID().toString() + " " + beacon.getMajor()
-                    + " " +  beacon.getMinor());
-                }
-            }
-            @Override
-            public void onExitedRegion(Region region) {
-                // could add an "exit" notification too if you want (-:
-            }
-        });
-
-        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
-            @Override
-            public void onServiceReady() {
-                beaconManager.startMonitoring(new Region(
-                        "monitored region",
-                        null, // UUID
-                        null, null)); // Major, Minor
-            }
-        });
     }
 
     public void showNotification(String title, String message) {
