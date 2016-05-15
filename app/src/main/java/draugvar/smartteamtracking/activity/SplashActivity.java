@@ -22,6 +22,7 @@ import draugvar.smartteamtracking.data.Myself;
 import draugvar.smartteamtracking.data.User;
 import draugvar.smartteamtracking.rest.AuthOrSignupUser;
 import draugvar.smartteamtracking.singleton.WorkflowManager;
+import io.realm.Realm;
 
 public class SplashActivity extends AppCompatActivity {
     // Splash screen timer
@@ -35,6 +36,7 @@ public class SplashActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         Log.d("LoginTask","Inside onCreate of SplashActivity");
 
+        final Realm realm = Realm.getDefaultInstance();
 
         // Add code to print out the key hash
         try {
@@ -68,7 +70,9 @@ public class SplashActivity extends AppCompatActivity {
                     Myself myself = WorkflowManager.getWorkflowManager().getMyself();
                     try {
                         User responseUser = new AuthOrSignupUser().execute(myself.getUser()).get();
+                        realm.beginTransaction();
                         myself.setUser(responseUser);
+                        realm.commitTransaction();
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }

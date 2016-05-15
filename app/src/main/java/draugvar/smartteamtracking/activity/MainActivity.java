@@ -35,6 +35,7 @@ import draugvar.smartteamtracking.rest.GetBeacon;
 import draugvar.smartteamtracking.rest.GetGroupCount;
 import draugvar.smartteamtracking.rest.GetUsers;
 import draugvar.smartteamtracking.rest.InviteUsersToGroup;
+import draugvar.smartteamtracking.singleton.WorkflowManager;
 import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity {
@@ -122,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+        Log.d("MainActivity",WorkflowManager.getWorkflowManager().getMyself().getUser().toString());
     }
 
     @Override
