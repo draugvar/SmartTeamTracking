@@ -18,6 +18,12 @@ public class Myself extends RealmObject{
         this.pendingGroups.addAll(pendingGroups);
     }
 
+    public Myself() {
+        user = null;
+        groups = new RealmList<>();
+        pendingGroups = new RealmList<>();
+    }
+
     public User getUser() {
         return user;
     }

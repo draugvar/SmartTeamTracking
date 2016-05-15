@@ -2,10 +2,12 @@ package draugvar.smartteamtracking.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import org.parceler.Parcel;
+
 import io.realm.RealmObject;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-
+@Parcel
 public class Beacon extends RealmObject{
     private String uuid;
     private int major;
