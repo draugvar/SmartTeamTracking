@@ -9,15 +9,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -123,4 +130,41 @@ public class FriendsActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private ArrayList<String> getFriends() {
+        final ArrayList<String> friends_list = new ArrayList<>();
+
+        GraphRequest friend_request = GraphRequest.newMyFriendsRequest(
+                AccessToken.getCurrentAccessToken(),
+                new GraphRequest.GraphJSONArrayCallback() {
+                    @Override
+                    public void onCompleted(JSONArray objects, GraphResponse response) {
+                        Log.i("JSONArray", objects.toString());
+
+                        for (int i = 0; i < objects.length(); i++) {
+                            try {
+                                JSONObject friend = objects.getJSONObject(i);
+                                String id = friend.getString("id");
+                                String name = friend.getString("first_name");
+                                String surname = friend.getString("last_name");
+
+                                friends_list.add(id);
+                                friends_list.add(name);
+                                friends_list.add(surname);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+        Bundle param = new Bundle();
+        param.putString("fields", "id, first_name, last_name");
+        friend_request.setParameters(param);
+        friend_request.executeAsync();
+
+        return friends_list;
+    }
+
+
 }

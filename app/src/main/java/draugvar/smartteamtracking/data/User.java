@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.parceler.Parcel;
+
+import io.realm.RealmList;
 import io.realm.RealmObject;
 
 @Parcel
