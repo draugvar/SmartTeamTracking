@@ -20,6 +20,7 @@ public class User extends RealmObject {
     Double lonGPS;
     String authToken;
     String facebookId;
+    Beacon Beacon;
 
     public User(){
         this.name = null;
@@ -112,6 +113,14 @@ public class User extends RealmObject {
 
     public void setFacebookId(String facebookId) {
         this.facebookId = facebookId;
+    }
+
+    public Beacon getBeacon() {
+        return Beacon;
+    }
+
+    public void setBeacon(Beacon beacon) {
+        Beacon = beacon;
     }
 
     @Override

@@ -17,6 +17,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import draugvar.smartteamtracking.R;
+import draugvar.smartteamtracking.rest.AuthOrSignupUser;
+import draugvar.smartteamtracking.singleton.WorkflowManager;
 
 public class SplashActivity extends AppCompatActivity {
     // Splash screen timer
@@ -41,9 +43,7 @@ public class SplashActivity extends AppCompatActivity {
                 md.update(signature.toByteArray());
                 Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
             }
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e("SplashScreen", e.getMessage(), e);
-        } catch (NoSuchAlgorithmException e) {
+        } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException e) {
             Log.e("SplashScreen", e.getMessage(), e);
         }
 
@@ -62,6 +62,7 @@ public class SplashActivity extends AppCompatActivity {
                     Intent i = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(i);
                 } else {
+
                     Intent i = new Intent(SplashActivity.this, MainActivity.class);
                     startActivity(i);
                 }

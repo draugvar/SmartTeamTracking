@@ -81,11 +81,7 @@ public class LoginActivity extends AppCompatActivity {
                                     User responseUser = new  AuthOrSignupUser().execute(requestUser).get();
                                     Log.d("LoginTask","Returned from rest call: "+ responseUser.toString());
 
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                } catch (ExecutionException e) {
+                                } catch (JSONException | InterruptedException | ExecutionException e) {
                                     e.printStackTrace();
                                 }
                             }
