@@ -7,21 +7,21 @@ import io.realm.RealmObject;
 
 public class Myself extends RealmObject{
     private User user;
-    private RealmList<Group> groups;
-    private RealmList<Group> pendingGroups;
+    //private RealmList<Group> groups;
+    //private RealmList<Group> pendingGroups;
 
     public Myself(User user, List<Group> groups, List<Group> pendingGroups){
         this.user = user;
-        this.groups = new RealmList<>();
+        /*this.groups = new RealmList<>();
         this.groups.addAll(groups);
         this.pendingGroups = new RealmList<>();
-        this.pendingGroups.addAll(pendingGroups);
+        this.pendingGroups.addAll(pendingGroups);*/
     }
 
     public Myself() {
         user = null;
-        groups = new RealmList<>();
-        pendingGroups = new RealmList<>();
+        /*groups = new RealmList<>();
+        pendingGroups = new RealmList<>();*/
     }
 
     public User getUser() {
@@ -32,7 +32,7 @@ public class Myself extends RealmObject{
         this.user = user;
     }
 
-    public RealmList<Group> getGroups() {
+    /*public RealmList<Group> getGroups() {
         return groups;
     }
 
@@ -46,5 +46,5 @@ public class Myself extends RealmObject{
 
     public void setPendingGroups(RealmList<Group> pendingGroups) {
         this.pendingGroups = pendingGroups;
-    }
+    }*/
 }

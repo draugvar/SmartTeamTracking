@@ -33,12 +33,14 @@ import draugvar.smartteamtracking.data.Beacon;
 import draugvar.smartteamtracking.data.Group;
 import draugvar.smartteamtracking.data.Myself;
 import draugvar.smartteamtracking.data.User;
+import draugvar.smartteamtracking.rest.AddContains;
 import draugvar.smartteamtracking.rest.AddInRange;
 import draugvar.smartteamtracking.rest.CreateGroup;
 import draugvar.smartteamtracking.rest.GetBeacon;
 import draugvar.smartteamtracking.rest.GetGroupCount;
 import draugvar.smartteamtracking.rest.GetUsers;
 import draugvar.smartteamtracking.rest.InviteUsersToGroup;
+import draugvar.smartteamtracking.rest.RemovePending;
 import draugvar.smartteamtracking.singleton.WorkflowManager;
 import io.realm.Realm;
 
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Log.d("LoginTask","Inside onCreate of MainActivity");
+        Log.d("LoginTask", "Inside onCreate of MainActivity");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;
@@ -100,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
                         realm.commitTransaction();
                         dialog.dismiss();
                     }
-
                 });
 
                 builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -122,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onClick(View v, IAdapter adapter, IItem item, final int position) {
                 if(item instanceof PendingGroupItem){
                     final PendingGroupItem pendingGroupItem = (PendingGroupItem) item;
+                    final long uid = realm.where(Myself.class).findFirst().getUser().getUid();
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
 
@@ -133,12 +135,9 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             // Do nothing but close the dialog
                             GroupItem groupItem = new GroupItem(pendingGroupItem.group);
-                            fastAdapter.add(-1, groupItem);
+                            new AddContains(uid, pendingGroupItem.group.getGid()).execute();
                             fastAdapter.remove(position);
-                            realm.beginTransaction();
-                            realm.where(Group.class).equalTo("gid", groupItem.group.getGid()).findAll()
-                                    .deleteFirstFromRealm();
-                            realm.commitTransaction();
+                            fastAdapter.add(groupItem);
                             dialog.dismiss();
                         }
 
@@ -149,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // Do nothing
+                            new RemovePending(uid, pendingGroupItem.group.getGid()).execute();
+                            fastAdapter.remove(position);
                             dialog.dismiss();
                         }
                     });
