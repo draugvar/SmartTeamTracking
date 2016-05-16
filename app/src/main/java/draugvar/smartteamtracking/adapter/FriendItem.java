@@ -23,7 +23,7 @@ public class FriendItem extends AbstractItem<FriendItem, FriendItem.ViewHolder> 
     //The unique ID for this type of item
     @Override
     public int getType() {
-        return 0;
+        return R.id.friend_item;
     }
 
     //The layout to be used for this type of item

@@ -105,18 +105,20 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        assert groupList != null;
-        for(Group group: groupList){
-            GroupItem groupItem = new GroupItem(group);
-            if(!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
-                fastAdapter.add(groupItem);
-        }
-
         assert groupPendingList != null;
         for(Group group: groupPendingList){
             PendingGroupItem groupItem = new PendingGroupItem(group);
             if(!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
                 fastAdapter.add(0,groupItem);
+        }
+
+        assert groupList != null;
+        for(Group group: groupList){
+            GroupItem groupItem = new GroupItem(group);
+            if(!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
+            {
+                fastAdapter.add(groupItem);
+            }
         }
     }
 
@@ -246,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
 
                         public void onClick(DialogInterface dialog, int which) {
                             // Do nothing but close the dialog
-                            PendingGroupItem groupItem = new PendingGroupItem(pendingGroupItem.group);
+                            GroupItem groupItem = new GroupItem(pendingGroupItem.group);
                             new AddContains(uid, pendingGroupItem.group.getGid()).execute();
                             fastAdapter.remove(position);
                             fastAdapter.add(groupItem);

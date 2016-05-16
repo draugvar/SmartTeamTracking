@@ -21,7 +21,7 @@ public class PendingGroupItem extends AbstractItem<PendingGroupItem, PendingGrou
     //The unique ID for this type of item
     @Override
     public int getType() {
-        return 0;
+        return R.id.pending_group_item;
     }
 
     //The layout to be used for this type of item
@@ -42,7 +42,7 @@ public class PendingGroupItem extends AbstractItem<PendingGroupItem, PendingGrou
         //set the text for the description or hide
         viewHolder.description.setText("Pending");
         //set the text for number of parties
-        viewHolder.num_users.setText(group.countUsers() + "");
+        viewHolder.num_users.setText(group.countUsers());
     }
 
     //The viewHolder used for this item. This viewHolder is always reused by the RecyclerView so scrolling is blazing fast

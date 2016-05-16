@@ -21,7 +21,7 @@ public class GroupItem extends AbstractItem<GroupItem, GroupItem.ViewHolder> {
     //The unique ID for this type of item
     @Override
     public int getType() {
-        return 0;
+        return R.id.group_item;
     }
 
     //The layout to be used for this type of item
@@ -60,7 +60,7 @@ public class GroupItem extends AbstractItem<GroupItem, GroupItem.ViewHolder> {
         }
     }
 
-    @Override
+    /*@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -77,7 +77,7 @@ public class GroupItem extends AbstractItem<GroupItem, GroupItem.ViewHolder> {
         int result = super.hashCode();
         result = 31 * result + (group != null ? group.hashCode() : 0);
         return result;
-    }
+    }*/
 
     protected static class ItemFactory implements ViewHolderFactory<ViewHolder> {
         @Override
