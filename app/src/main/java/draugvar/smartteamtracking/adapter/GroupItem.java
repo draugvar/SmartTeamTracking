@@ -43,7 +43,9 @@ public class GroupItem extends AbstractItem<GroupItem, GroupItem.ViewHolder> {
         //if(pending)
             //viewHolder.description.setText("Pending");
         //set the text for number of parties
-        viewHolder.num_users.setText(group.countUsers() + "");
+        viewHolder.num_users.setText(group.countUsers());
+        //set initials
+        viewHolder.initials.setText(group.getName().substring(0,1));
     }
 
     //The viewHolder used for this item. This viewHolder is always reused by the RecyclerView so scrolling is blazing fast
@@ -51,12 +53,14 @@ public class GroupItem extends AbstractItem<GroupItem, GroupItem.ViewHolder> {
         protected TextView name;
         protected TextView description;
         protected TextView num_users;
+        protected TextView initials;
 
         public ViewHolder(View view) {
             super(view);
             this.name = (TextView) view.findViewById(R.id.group_name);
             this.description = (TextView) view.findViewById(R.id.group_description);
             this.num_users = (TextView) view.findViewById(R.id.num_users);
+            this.initials = (TextView) view.findViewById(R.id.group_initials);
         }
     }
 

@@ -43,6 +43,8 @@ public class PendingGroupItem extends AbstractItem<PendingGroupItem, PendingGrou
         viewHolder.description.setText("Pending");
         //set the text for number of parties
         viewHolder.num_users.setText(group.countUsers());
+        //set initials
+        viewHolder.initials.setText(group.getName().substring(0,1));
     }
 
     //The viewHolder used for this item. This viewHolder is always reused by the RecyclerView so scrolling is blazing fast
@@ -50,12 +52,14 @@ public class PendingGroupItem extends AbstractItem<PendingGroupItem, PendingGrou
         protected TextView name;
         protected TextView description;
         protected TextView num_users;
+        protected TextView initials;
 
         public ViewHolder(View view) {
             super(view);
             this.name = (TextView) view.findViewById(R.id.pending_group_name);
             this.description = (TextView) view.findViewById(R.id.pending_group_description);
             this.num_users = (TextView) view.findViewById(R.id.pending_num_users);
+            this.initials = (TextView) view.findViewById(R.id.pending_group_initials);
         }
     }
 
