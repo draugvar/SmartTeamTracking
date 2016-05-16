@@ -44,6 +44,7 @@ import draugvar.smartteamtracking.rest.AddContains;
 import draugvar.smartteamtracking.rest.GetGroupsOfUsers;
 import draugvar.smartteamtracking.rest.GetPendingGroupsOfUsers;
 import draugvar.smartteamtracking.rest.RemovePending;
+import draugvar.smartteamtracking.rest.RemoveUserFromGroup;
 import draugvar.smartteamtracking.rest.UpdateUserGPSCoordinates;
 import draugvar.smartteamtracking.singleton.WorkflowManager;
 import io.realm.Realm;
@@ -225,17 +226,10 @@ public class MainActivity extends AppCompatActivity {
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int which) {
-                        // Do nothing but close the dialog
+                        // Send rest call to delete group and remove from fastAdapter
                         GroupItem groupItem = (GroupItem) fastAdapter.getAdapterItem(position);
+                        new RemoveUserFromGroup(WorkflowManager.getWorkflowManager().getMyselfId(),groupItem.group.getGid()).execute();
                         fastAdapter.remove(position);
-
-                        /*  NO MORE REALM. TO BE DISCUSSED!
-                        realm.beginTransaction();
-                        realm.where(Group.class).equalTo("gid", groupItem.group.getGid()).findAll()
-                                .deleteFirstFromRealm();
-                        realm.commitTransaction();
-                        */
-
                         dialog.dismiss();
                     }
                 });
