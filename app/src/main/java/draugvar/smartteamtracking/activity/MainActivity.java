@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -104,9 +103,6 @@ public class MainActivity extends AppCompatActivity {
 
         assert groupPendingList != null;
         assert groupList != null;
-
-
-
 
         for (Group group : groupPendingList) {
             /*PendingGroupItem groupItem = new PendingGroupItem(group);
@@ -143,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
             if(!found)
                 fastAdapter.add(new GroupItem(group));
         }
+        setBeaconManager();
     }
 
     @Override
@@ -209,7 +206,6 @@ public class MainActivity extends AppCompatActivity {
         assert recyclerView != null;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(fastAdapter);
-
 
         // ----- fastAdapter -- OnLongCLickListener -----
         fastAdapter.withOnLongClickListener(new FastAdapter.OnLongClickListener() {
