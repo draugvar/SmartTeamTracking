@@ -1,6 +1,7 @@
 package draugvar.smartteamtracking.singleton;
 
 import android.content.Context;
+import android.location.LocationManager;
 import android.util.Log;
 
 import java.util.LinkedList;
@@ -18,10 +19,29 @@ public class WorkflowManager {
 
     // Data
     private Myself myself;
-    private List<User> userList = new LinkedList<User>(); // FRIENDS LIST
-    private List<Group> groupList = new LinkedList<Group>(); // SHOULD MAKE LIST THREAD SAFE
-
     private Long myselfId;
+    private double myselfGPSLatitude;
+    private double myselfGPSLongitude;
+    private boolean isInside;
+
+    public boolean isInside() {
+        return isInside;
+    }
+
+    public void setInside(boolean inside) {
+        isInside = inside;
+    }
+
+    //Pointers to objects
+    private LocationManager locationManager;
+
+    public LocationManager getLocationManager() {
+        return locationManager;
+    }
+
+    public void setLocationManager(LocationManager locationManager) {
+        this.locationManager = locationManager;
+    }
 
     private Context context;
 
@@ -59,5 +79,22 @@ public class WorkflowManager {
 
     public void setMyselfId(Long myselfId) {
         this.myselfId = myselfId;
+    }
+
+
+    public double getMyselfGPSLatitude() {
+        return myselfGPSLatitude;
+    }
+
+    public void setMyselfGPSLatitude(double myselfGPSLatitude) {
+        this.myselfGPSLatitude = myselfGPSLatitude;
+    }
+
+    public double getMyselfGPSLongitude() {
+        return myselfGPSLongitude;
+    }
+
+    public void setMyselfGPSLongitude(double myselfGPSLongitude) {
+        this.myselfGPSLongitude = myselfGPSLongitude;
     }
 }

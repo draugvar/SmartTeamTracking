@@ -1,9 +1,15 @@
 package draugvar.smartteamtracking.activity;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,6 +35,8 @@ import draugvar.smartteamtracking.adapter.GroupItem;
 import draugvar.smartteamtracking.adapter.PendingGroupItem;
 import draugvar.smartteamtracking.data.Group;
 import draugvar.smartteamtracking.data.Myself;
+import draugvar.smartteamtracking.listener.CustomGpsStatusListener;
+import draugvar.smartteamtracking.listener.CustomLocationListener;
 import draugvar.smartteamtracking.rest.AddContains;
 import draugvar.smartteamtracking.rest.GetGroupsOfUsers;
 import draugvar.smartteamtracking.rest.GetPendingGroupsOfUsers;
@@ -159,6 +167,20 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {return;}
+        locationManager.addGpsStatusListener(new CustomGpsStatusListener());
+
+        //GPS initialization
+
+        CustomLocationListener locationListener = new CustomLocationListener(this);
+        try{
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 5, locationListener);
+        }
+        catch (SecurityException e){
+            Log.d("Location","Location not enabled");
+        }
     }
 
 
