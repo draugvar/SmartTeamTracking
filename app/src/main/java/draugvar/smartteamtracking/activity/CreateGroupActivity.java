@@ -166,7 +166,7 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
             group.setRadius((int) circleOptions.getRadius());
             try {
                 long gid = new CreateGroup(WorkflowManager.getWorkflowManager().getMyselfId(), group ).execute().get();
-                new InviteUsersToGroup(gid, fb_id);
+                new InviteUsersToGroup(gid, fb_id).execute();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }

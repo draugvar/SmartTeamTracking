@@ -51,9 +51,9 @@ public class PendingGroupItem extends AbstractItem<PendingGroupItem, PendingGrou
 
         public ViewHolder(View view) {
             super(view);
-            this.name = (TextView) view.findViewById(R.id.group_name);
-            this.description = (TextView) view.findViewById(R.id.group_description);
-            this.num_users = (TextView) view.findViewById(R.id.num_users);
+            this.name = (TextView) view.findViewById(R.id.pending_group_name);
+            this.description = (TextView) view.findViewById(R.id.pending_group_description);
+            this.num_users = (TextView) view.findViewById(R.id.pending_num_users);
         }
     }
 }
