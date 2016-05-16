@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         for (Group group : groupPendingList) {
-             /*PendingGroupItem groupItem = new PendingGroupItem(group);
+            /*PendingGroupItem groupItem = new PendingGroupItem(group);
             if (!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
                 fastAdapter.add(0, groupItem);*/
             Iterator<AbstractItem> itemIterator = fastAdapter.getAdapterItems().iterator();
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         for (Group group : groupList) {
-           /* GroupItem groupItem = new GroupItem(group);
+            /* GroupItem groupItem = new GroupItem(group);
             if (!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
             {
                 fastAdapter.add(groupItem);
