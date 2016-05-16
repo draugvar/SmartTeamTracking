@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -68,7 +67,99 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        setFastAdapter();
+    }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Long myselfId = WorkflowManager.getWorkflowManager().getMyselfId();
+        List<Group> groupList =null;
+        List<Group> groupPendingList = null;
+
+        // update with current groups and pending groups
+        try {
+            groupList = new GetGroupsOfUsers(myselfId).execute().get();
+            groupPendingList = new GetPendingGroupsOfUsers(myselfId).execute().get();
+        } catch (InterruptedException | ExecutionException e) {
+            Log.d("Rest","MainActivity - onResume - Cannot retrieve groupList or groupPendingList ");
+            e.printStackTrace();
+        }
+
+        assert groupList != null;
+        for(Group group: groupList){
+            GroupItem groupItem = new GroupItem(group);
+            if(!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
+                fastAdapter.add(groupItem);
+        }
+
+        assert groupPendingList != null;
+        for(Group group: groupPendingList){
+            PendingGroupItem groupItem = new PendingGroupItem(group);
+            if(!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
+                fastAdapter.add(0,groupItem);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void setBeaconManager(){
+        final BeaconManager beaconManager;
+        // ----- Estimote Beacon set-up ----- //
+        beaconManager = new BeaconManager(getApplicationContext());
+
+        beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
+            @Override
+            public void onEnteredRegion(Region region, List<com.estimote.sdk.Beacon> list) {
+                /*showNotification(
+                        "Your gate closes in 47 minutes.",
+                        "Current security wait time is 15 minutes, "
+                                + "and it's a 5 minute walk from security to the gate. "
+                                + "Looks like you've got plenty of time!");*/
+                for(com.estimote.sdk.Beacon beacon: list){
+                    Log.d("ESTIMOTE", beacon.getProximityUUID().toString() + " " + beacon.getMajor()
+                            + " " +  beacon.getMinor());
+                }
+            }
+            @Override
+            public void onExitedRegion(Region region) {
+                // could add an "exit" notification too if you want (-:
+            }
+        });
+
+        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+            @Override
+            public void onServiceReady() {
+                beaconManager.startMonitoring(new Region(
+                        "monitored region",
+                        null, // UUID
+                        null, null)); // Major, Minor
+            }
+        });
+    }
+
+    public void setFastAdapter(){
         //init our FastAdapter which will manage everything
         fastAdapter = new FastItemAdapter();
 
@@ -78,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
         assert recyclerView != null;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(fastAdapter);
+
 
         // ----- fastAdapter -- OnLongCLickListener -----
         fastAdapter.withOnLongClickListener(new FastAdapter.OnLongClickListener() {
@@ -181,94 +273,5 @@ public class MainActivity extends AppCompatActivity {
         catch (SecurityException e){
             Log.d("Location","Location not enabled");
         }
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Long myselfId = WorkflowManager.getWorkflowManager().getMyselfId();
-        List<Group> groupList =null;
-        List<Group> groupPendingList = null;
-
-        // update with current groups and pending groups
-        try {
-            groupList = new GetGroupsOfUsers(myselfId).execute().get();
-            groupPendingList = new GetPendingGroupsOfUsers(myselfId).execute().get();
-        } catch (InterruptedException | ExecutionException e) {
-            Log.d("Rest","MainActivity - onResume - Cannot retrieve groupList or groupPendingList ");
-            e.printStackTrace();
-        }
-
-        assert groupList != null;
-        for(Group group: groupList){
-            GroupItem groupItem = new GroupItem(group);
-            if(!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
-                fastAdapter.add(groupItem);
-        }
-
-        assert groupPendingList != null;
-        for(Group group: groupPendingList){
-            PendingGroupItem groupItem = new PendingGroupItem(group);
-            if(!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
-                fastAdapter.add(0,groupItem);
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void setBeaconManager(){
-        final BeaconManager beaconManager;
-        // ----- Estimote Beacon set-up ----- //
-        beaconManager = new BeaconManager(getApplicationContext());
-
-        beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
-            @Override
-            public void onEnteredRegion(Region region, List<com.estimote.sdk.Beacon> list) {
-                /*showNotification(
-                        "Your gate closes in 47 minutes.",
-                        "Current security wait time is 15 minutes, "
-                                + "and it's a 5 minute walk from security to the gate. "
-                                + "Looks like you've got plenty of time!");*/
-                for(com.estimote.sdk.Beacon beacon: list){
-                    Log.d("ESTIMOTE", beacon.getProximityUUID().toString() + " " + beacon.getMajor()
-                            + " " +  beacon.getMinor());
-                }
-            }
-            @Override
-            public void onExitedRegion(Region region) {
-                // could add an "exit" notification too if you want (-:
-            }
-        });
-
-        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
-            @Override
-            public void onServiceReady() {
-                beaconManager.startMonitoring(new Region(
-                        "monitored region",
-                        null, // UUID
-                        null, null)); // Major, Minor
-            }
-        });
     }
 }

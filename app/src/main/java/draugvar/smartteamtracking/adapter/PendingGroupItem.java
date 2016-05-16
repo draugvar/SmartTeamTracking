@@ -5,11 +5,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mikepenz.fastadapter.items.AbstractItem;
+import com.mikepenz.fastadapter.utils.ViewHolderFactory;
 
 import draugvar.smartteamtracking.R;
 import draugvar.smartteamtracking.data.Group;
 
 public class PendingGroupItem extends AbstractItem<PendingGroupItem, PendingGroupItem.ViewHolder> {
+    private static final ViewHolderFactory<? extends ViewHolder> FACTORY = new ItemFactory();
     public Group group;
 
     public PendingGroupItem(Group group){
@@ -38,7 +40,7 @@ public class PendingGroupItem extends AbstractItem<PendingGroupItem, PendingGrou
         //set the text for the name
         viewHolder.name.setText(group.getName());
         //set the text for the description or hide
-        //viewHolder.description.setText("Pending");
+        viewHolder.description.setText("Pending");
         //set the text for number of parties
         viewHolder.num_users.setText(group.countUsers() + "");
     }
@@ -55,5 +57,17 @@ public class PendingGroupItem extends AbstractItem<PendingGroupItem, PendingGrou
             this.description = (TextView) view.findViewById(R.id.pending_group_description);
             this.num_users = (TextView) view.findViewById(R.id.pending_num_users);
         }
+    }
+
+    protected static class ItemFactory implements ViewHolderFactory<ViewHolder>{
+        @Override
+        public ViewHolder create(View v) {
+            return new ViewHolder(v);
+        }
+    }
+
+    @Override
+    public ViewHolderFactory<? extends ViewHolder> getFactory() {
+        return FACTORY;
     }
 }

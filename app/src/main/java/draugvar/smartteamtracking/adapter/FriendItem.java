@@ -7,11 +7,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mikepenz.fastadapter.items.AbstractItem;
+import com.mikepenz.fastadapter.utils.ViewHolderFactory;
 
 import draugvar.smartteamtracking.R;
 import draugvar.smartteamtracking.data.User;
 
 public class FriendItem extends AbstractItem<FriendItem, FriendItem.ViewHolder> {
+    private static final ViewHolderFactory<? extends ViewHolder> FACTORY = new ItemFactory();
     public User user;
 
     public FriendItem(User user){
@@ -64,5 +66,17 @@ public class FriendItem extends AbstractItem<FriendItem, FriendItem.ViewHolder> 
             this.status = (TextView) view.findViewById(R.id.friend_status);
             this.initials = (TextView) view.findViewById(R.id.initials);
         }
+    }
+
+    protected static class ItemFactory implements ViewHolderFactory<ViewHolder> {
+        @Override
+        public ViewHolder create(View v) {
+            return new ViewHolder(v);
+        }
+    }
+
+    @Override
+    public ViewHolderFactory<? extends ViewHolder> getFactory() {
+        return FACTORY;
     }
 }

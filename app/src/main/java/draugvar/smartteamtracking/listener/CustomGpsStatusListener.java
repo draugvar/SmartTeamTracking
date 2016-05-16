@@ -17,7 +17,7 @@ public class CustomGpsStatusListener implements GpsStatus.Listener {
         if (event == GpsStatus.GPS_EVENT_SATELLITE_STATUS) {
             int satellites = 0;
             int satellitesInFix = 0;
-            for (GpsSatellite sat : WorkflowManager.getWorkflowManager().getLocationManager().getGpsStatus(null).getSatellites()) {
+            /*for (GpsSatellite sat : WorkflowManager.getWorkflowManager().getLocationManager().getGpsStatus(null).getSatellites()) {
                 if (sat.usedInFix()) {
                     satellitesInFix++;
                 }
@@ -34,7 +34,7 @@ public class CustomGpsStatusListener implements GpsStatus.Listener {
                 WorkflowManager.getWorkflowManager().setInside(true);
                 new UpdateUserGPSCoordinates(WorkflowManager.getWorkflowManager().getMyselfId(),null,null).execute();
                 Log.d("Location","Set GPS values to null");
-            }
+            }*/
         }
     }
 }

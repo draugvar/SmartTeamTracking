@@ -5,11 +5,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mikepenz.fastadapter.items.AbstractItem;
+import com.mikepenz.fastadapter.utils.ViewHolderFactory;
 
 import draugvar.smartteamtracking.R;
 import draugvar.smartteamtracking.data.Group;
 
 public class GroupItem extends AbstractItem<GroupItem, GroupItem.ViewHolder> {
+    private static final ViewHolderFactory<? extends ViewHolder> FACTORY = new ItemFactory();
     public Group group;
 
     public GroupItem(Group group){
@@ -74,5 +76,17 @@ public class GroupItem extends AbstractItem<GroupItem, GroupItem.ViewHolder> {
         int result = super.hashCode();
         result = 31 * result + (group != null ? group.hashCode() : 0);
         return result;
+    }
+
+    protected static class ItemFactory implements ViewHolderFactory<ViewHolder> {
+        @Override
+        public ViewHolder create(View v) {
+            return new ViewHolder(v);
+        }
+    }
+
+    @Override
+    public ViewHolderFactory<? extends ViewHolder> getFactory() {
+        return FACTORY;
     }
 }
