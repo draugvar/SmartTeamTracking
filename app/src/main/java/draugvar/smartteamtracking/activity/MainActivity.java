@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
 import com.mikepenz.fastadapter.FastAdapter;
@@ -173,15 +174,11 @@ public class MainActivity extends AppCompatActivity {
 
         beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
             @Override
-            public void onEnteredRegion(Region region, List<com.estimote.sdk.Beacon> list) {
-                /*showNotification(
-                        "Your gate closes in 47 minutes.",
-                        "Current security wait time is 15 minutes, "
-                                + "and it's a 5 minute walk from security to the gate. "
-                                + "Looks like you've got plenty of time!");*/
-                for (com.estimote.sdk.Beacon beacon : list) {
-                    Log.d("ESTIMOTE", beacon.getProximityUUID().toString() + " " + beacon.getMajor()
-                            + " " + beacon.getMinor());
+            public void onEnteredRegion(Region region, List<Beacon> list) {
+                Beacon mBeacon = list.get(0);
+                for (Beacon beacon : list) {
+                    if(mBeacon.getMeasuredPower() < beacon.getMeasuredPower())
+                        mBeacon = beacon;
                 }
             }
 
@@ -228,7 +225,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // Send rest call to delete group and remove from fastAdapter
                         GroupItem groupItem = (GroupItem) fastAdapter.getAdapterItem(position);
-                        new RemoveUserFromGroup(WorkflowManager.getWorkflowManager().getMyselfId(),groupItem.group.getGid()).execute();
+                        Long uid = WorkflowManager.getWorkflowManager().getMyselfId();
+                        new RemoveUserFromGroup(uid, groupItem.group.getGid()).execute();
                         fastAdapter.remove(position);
                         dialog.dismiss();
                     }
