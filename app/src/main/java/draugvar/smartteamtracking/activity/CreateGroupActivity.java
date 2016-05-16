@@ -28,10 +28,14 @@ import com.google.android.gms.maps.model.LatLng;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import draugvar.smartteamtracking.R;
 import draugvar.smartteamtracking.data.Group;
 import draugvar.smartteamtracking.data.User;
+import draugvar.smartteamtracking.rest.CreateGroup;
+import draugvar.smartteamtracking.rest.InviteUsersToGroup;
+import draugvar.smartteamtracking.singleton.WorkflowManager;
 import io.realm.Realm;
 
 public class CreateGroupActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -42,6 +46,8 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
     private EditText group_name;
     private Realm realm;
     private SeekBar seekBar;
+    private double latitude;
+    private double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,8 +105,8 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
     public void centerMyLocation(View view) {
         Location location = locationManager.getLastKnownLocation(locationManager
                 .getBestProvider(new Criteria(), true));
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             // Get back the mutable Circle
@@ -122,8 +128,8 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
             Location location = locationManager.getLastKnownLocation(locationManager
                     .getBestProvider(new Criteria(), true));
             if(location != null) {
-                double latitude = location.getLatitude();
-                double longitude = location.getLongitude();
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 12));
             }
         } else {
@@ -147,6 +153,23 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.accept_group) {
+            ArrayList<User> users = Parcels.unwrap(getIntent().getParcelableExtra("users"));
+            ArrayList<String> fb_id = new ArrayList<>();
+            for(User user : users){
+                fb_id.add(user.getFacebookId());
+            }
+            String g_name = group_name.getText().toString();
+            Group group = new Group();
+            group.setName(g_name);
+            group.setLatCenter(latitude);
+            group.setLonCenter(longitude);
+            group.setRadius((int) circleOptions.getRadius());
+            try {
+                long gid = new CreateGroup(WorkflowManager.getWorkflowManager().getMyselfId(), group ).execute().get();
+                new InviteUsersToGroup(gid, fb_id);
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
             //THIS NEEDS TO MAKE REST CALLS!!!
             /*String g_name = group_name.getText().toString();
             realm.beginTransaction();
@@ -158,9 +181,9 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
             for(User u: users){
                 mGroup.addUser(u);
             }
-            //realm.commitTransaction();
+            //realm.commitTransaction();*/
             Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);*/
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
