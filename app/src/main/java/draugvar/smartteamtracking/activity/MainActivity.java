@@ -65,10 +65,23 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(),FriendsActivity.class);
                 startActivity(intent);
-
             }
         });
         setFastAdapter();
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {return;}
+        locationManager.addGpsStatusListener(new CustomGpsStatusListener());
+
+        //GPS initialization
+
+        CustomLocationListener locationListener = new CustomLocationListener(this);
+        try{
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 5, locationListener);
+        }
+        catch (SecurityException e){
+            Log.d("Location","Location not enabled");
+        }
     }
 
 
@@ -76,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Long myselfId = WorkflowManager.getWorkflowManager().getMyselfId();
-        List<Group> groupList =null;
+        List<Group> groupList = null;
         List<Group> groupPendingList = null;
 
         // update with current groups and pending groups
@@ -229,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
 
                         public void onClick(DialogInterface dialog, int which) {
                             // Do nothing but close the dialog
-                            GroupItem groupItem = new GroupItem(pendingGroupItem.group);
+                            PendingGroupItem groupItem = new PendingGroupItem(pendingGroupItem.group);
                             new AddContains(uid, pendingGroupItem.group.getGid()).execute();
                             fastAdapter.remove(position);
                             fastAdapter.add(groupItem);
@@ -260,19 +273,5 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {return;}
-        locationManager.addGpsStatusListener(new CustomGpsStatusListener());
-
-        //GPS initialization
-
-        CustomLocationListener locationListener = new CustomLocationListener(this);
-        try{
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 5, locationListener);
-        }
-        catch (SecurityException e){
-            Log.d("Location","Location not enabled");
-        }
     }
 }

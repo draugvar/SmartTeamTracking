@@ -40,7 +40,8 @@ public class GroupItem extends AbstractItem<GroupItem, GroupItem.ViewHolder> {
         //set the text for the name
         viewHolder.name.setText(group.getName());
         //set the text for the description or hide
-        //viewHolder.description.setText("Pending");
+        //if(pending)
+            //viewHolder.description.setText("Pending");
         //set the text for number of parties
         viewHolder.num_users.setText(group.countUsers() + "");
     }
