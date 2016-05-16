@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="pending_group_item" type="id" />
+    <item name="group_item" type="id" />
+    <item name="friend_item" type="id" />
+</resources>
