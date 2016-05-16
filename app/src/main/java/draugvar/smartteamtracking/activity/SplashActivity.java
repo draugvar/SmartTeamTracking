@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 
@@ -23,18 +23,13 @@ import draugvar.smartteamtracking.data.User;
 import draugvar.smartteamtracking.rest.AuthOrSignupUser;
 import draugvar.smartteamtracking.singleton.WorkflowManager;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 
 public class SplashActivity extends AppCompatActivity {
-    // Splash screen timer
-    private static int SPLASH_TIME_OUT = 1500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
-        Realm.setDefaultConfiguration( new RealmConfiguration.Builder(this).build());
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         Log.d("LoginTask","Inside onCreate of SplashActivity");
@@ -53,6 +48,7 @@ public class SplashActivity extends AppCompatActivity {
             Log.e("SplashScreen", e.getMessage(), e);
         }
 
+        int SPLASH_TIME_OUT = 1000;
         new Handler().postDelayed(new Runnable() {
 
             /*

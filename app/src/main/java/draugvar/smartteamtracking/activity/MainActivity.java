@@ -10,9 +10,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
@@ -21,28 +21,17 @@ import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.IItem;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import draugvar.smartteamtracking.R;
 import draugvar.smartteamtracking.adapter.GroupItem;
 import draugvar.smartteamtracking.adapter.PendingGroupItem;
-import draugvar.smartteamtracking.data.Beacon;
 import draugvar.smartteamtracking.data.Group;
 import draugvar.smartteamtracking.data.Myself;
-import draugvar.smartteamtracking.data.User;
 import draugvar.smartteamtracking.rest.AddContains;
-import draugvar.smartteamtracking.rest.AddInRange;
-import draugvar.smartteamtracking.rest.CreateGroup;
-import draugvar.smartteamtracking.rest.GetBeacon;
-import draugvar.smartteamtracking.rest.GetGroupCount;
 import draugvar.smartteamtracking.rest.GetGroupsOfUsers;
 import draugvar.smartteamtracking.rest.GetPendingGroupsOfUsers;
-import draugvar.smartteamtracking.rest.GetUsers;
-import draugvar.smartteamtracking.rest.InviteUsersToGroup;
 import draugvar.smartteamtracking.rest.RemovePending;
 import draugvar.smartteamtracking.singleton.WorkflowManager;
 import io.realm.Realm;
@@ -170,8 +159,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-        Myself myself = realm.where(Myself.class).findFirst();
-        Log.d("MainActivity",myself.getUser().toString());
     }
 
 
@@ -186,22 +173,21 @@ public class MainActivity extends AppCompatActivity {
         try {
             groupList = new GetGroupsOfUsers(myselfId).execute().get();
             groupPendingList = new GetPendingGroupsOfUsers(myselfId).execute().get();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | ExecutionException e) {
             Log.d("Rest","MainActivity - onResume - Cannot retrieve groupList or groupPendingList ");
             e.printStackTrace();
-        } catch (ExecutionException e) {
-            Log.d("Rest","MainActivity - onResume - Cannot retrieve groupList or groupPendingList ");
-            e.printStackTrace();;
         }
 
+        assert groupList != null;
         for(Group group: groupList){
             GroupItem groupItem = new GroupItem(group);
             if(!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
                 fastAdapter.add(groupItem);
         }
 
+        assert groupPendingList != null;
         for(Group group: groupPendingList){
-            GroupItem groupItem = new GroupItem(group);
+            PendingGroupItem groupItem = new PendingGroupItem(group);
             if(!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
                 fastAdapter.add(0,groupItem);
         }

@@ -1,8 +1,8 @@
 package draugvar.smartteamtracking.activity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.facebook.AccessToken;
@@ -16,7 +16,6 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,7 +28,6 @@ import draugvar.smartteamtracking.data.User;
 import draugvar.smartteamtracking.rest.AuthOrSignupUser;
 import draugvar.smartteamtracking.singleton.WorkflowManager;
 import io.realm.Realm;
-import io.realm.RealmList;
 
 public class LoginActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
@@ -108,50 +106,6 @@ public class LoginActivity extends AppCompatActivity {
                 parameters.putString("fields", "id, first_name, last_name, picture, email");
                 request.setParameters(parameters);
                 request.executeAsync();
-
-                /*
-                realm.beginTransaction();
-                final RealmList<Friend> realm_friends = new RealmList<>();
-                realm.copyToRealm(realm_friends);
-                realm.commitTransaction();
-
-                // Graph Request per friend_list
-                GraphRequest friend_request = GraphRequest.newMyFriendsRequest(
-                        AccessToken.getCurrentAccessToken(),
-                        new GraphRequest.GraphJSONArrayCallback() {
-                            @Override
-                            public void onCompleted(JSONArray objects, GraphResponse response) {
-                                Log.i("JSONArray", objects.toString());
-
-                                for (int i = 0; i < objects.length(); i++) {
-                                    try {
-                                        JSONObject friend = objects.getJSONObject(i);
-                                        String id = friend.getString("id");
-                                        String name = friend.getString("first_name");
-                                        String surname = friend.getString("last_name");
-
-                                        realm.beginTransaction();
-                                        Friend realm_friend = realm.createObject(Friend.class);
-                                        realm_friend.setID(id);
-                                        realm_friend.setName(name);
-                                        realm_friend.setSurname(surname);
-                                        realm_friends.add(realm_friend);
-                                        realm.commitTransaction();
-
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                realm.beginTransaction();
-                                user.setFriends(realm_friends);
-                                realm.commitTransaction();
-                            }
-                        });
-                Bundle param = new Bundle();
-                param.putString("fields", "id, first_name, last_name");
-                friend_request.setParameters(param);
-                friend_request.executeAsync();
-                */
             }
 
 

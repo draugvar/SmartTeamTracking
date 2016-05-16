@@ -1,5 +1,6 @@
 package draugvar.smartteamtracking.activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 import draugvar.smartteamtracking.R;
 import draugvar.smartteamtracking.adapter.FriendItem;
@@ -38,6 +41,8 @@ import draugvar.smartteamtracking.data.User;
 public class FriendsActivity extends AppCompatActivity {
     private AutoCompleteTextView editText;
     private ArrayList<User> users = new ArrayList<User>();
+    private ArrayList<String[]> friends_list;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +52,11 @@ public class FriendsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        context = this;
+
         editText = (AutoCompleteTextView) findViewById(R.id.edit_text_friend);
+        assert editText != null;
+        editText.setEnabled(false);
 
         //create our FastAdapter which will manage everything
         final FastItemAdapter<FriendItem> fastAdapter = new FastItemAdapter<>();
@@ -97,8 +106,8 @@ public class FriendsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                User user = new User(0, editText.getText().toString(),"","");
-                FriendItem friendItem = new FriendItem( user );
+                User user = new User(0, editText.getText().toString(), "", "");
+                FriendItem friendItem = new FriendItem(user);
 
                 fastAdapter.add(0, friendItem);
                 recyclerView.scrollToPosition(0);
@@ -106,13 +115,7 @@ public class FriendsActivity extends AppCompatActivity {
                 users.add(0, user);
             }
         });
-
-        // Friends list
-        String[] countries;
-        // Create the adapter and set it to the AutoCompleteTextView
-        //ArrayAdapter<String> adapter =
-                //new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, countries);
-        //textView.setAdapter(adapter);
+        getFriends();
     }
 
     @Override
@@ -140,8 +143,9 @@ public class FriendsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private ArrayList<String[]> getFriends() {
-        final ArrayList<String[]> friends_list = new ArrayList<>();
+    private void getFriends() {
+        friends_list = new ArrayList<>();
+        final LinkedList<String> friends = new LinkedList<>();
 
         GraphRequest friend_request = GraphRequest.newMyFriendsRequest(
                 AccessToken.getCurrentAccessToken(),
@@ -158,18 +162,21 @@ public class FriendsActivity extends AppCompatActivity {
                                 String surname = friend.getString("last_name");
                                 String[] fields = {id, name, surname};
                                 friends_list.add(fields);
-
+                                friends.add(name + " " + surname + " - " + id);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
+                        // Create the adapter and set it to the AutoCompleteTextView
+                        ArrayAdapter<String> adapter =
+                                new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, friends);
+                        editText.setAdapter(adapter);
+                        editText.setEnabled(true);
                     }
                 });
         Bundle param = new Bundle();
         param.putString("fields", "id, first_name, last_name");
         friend_request.setParameters(param);
         friend_request.executeAsync();
-
-        return friends_list;
     }
 }
