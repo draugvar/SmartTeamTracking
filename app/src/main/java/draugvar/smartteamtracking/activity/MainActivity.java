@@ -74,8 +74,9 @@ public class MainActivity extends AppCompatActivity {
         setFastAdapter();
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}
-                    , PERMISSION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
+        } else {
+            setupLocation();
         }
     }
 
@@ -279,22 +280,26 @@ public class MainActivity extends AppCompatActivity {
             if (permissions.length == 1 &&
                     permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION) &&
                             grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                try {
-                    Log.d("Location","Inside onRequestPermissionResult");
-                    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                    WorkflowManager.getWorkflowManager().setLocationManager(locationManager);
-                    locationManager.addGpsStatusListener(new CustomGpsStatusListener());
-
-                    //GPS initialization
-
-                    CustomLocationListener locationListener = new CustomLocationListener(this);
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 5, locationListener);
-                } catch (SecurityException e) {
-                    Log.d("Location", "Location not enabled");
-                }
+                setupLocation();
             } else {
                 Log.d("Location", "Cannot start position related functions. This user position will not be updated.");
             }
+        }
+    }
+
+    private void setupLocation() {
+        try {
+            Log.d("Location","Inside onRequestPermissionResult");
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            WorkflowManager.getWorkflowManager().setLocationManager(locationManager);
+            locationManager.addGpsStatusListener(new CustomGpsStatusListener());
+
+            //GPS initialization
+
+            CustomLocationListener locationListener = new CustomLocationListener(this);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 5, locationListener);
+        } catch (SecurityException e) {
+            Log.d("Location", "Location not enabled");
         }
     }
 }
