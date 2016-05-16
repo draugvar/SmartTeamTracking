@@ -136,7 +136,7 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 12));
         } else {
             // Show rationale and request permission.
-            Log.d("CreateGroupActivity", "THis shish");
+            Log.d("CreateGroupActivity", "Shish");
         }
     }
 
