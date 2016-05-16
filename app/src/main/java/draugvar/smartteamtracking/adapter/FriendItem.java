@@ -46,7 +46,8 @@ public class FriendItem extends AbstractItem<FriendItem, FriendItem.ViewHolder> 
         viewHolder.status.setTextColor(ContextCompat.getColor(context, R.color.amber_400));
         //set the text for initials // to do elaborate!
         if(!user.getName().isEmpty())
-            viewHolder.initials.setText(user.getName().substring(0,1));
+            viewHolder.initials.setText(user.getName().substring(0,1)
+            + user.getSurname().substring(0,1));
     }
 
     //The viewHolder used for this item. This viewHolder is always reused by the RecyclerView so scrolling is blazing fast

@@ -51,6 +51,7 @@ public class FriendsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Add your friends");
 
         context = this;
 
@@ -106,7 +107,11 @@ public class FriendsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                User user = new User(0, editText.getText().toString(), "", "");
+                String[] user_info = editText.getText().toString().split(" ");
+                User user = new User();
+                user.setName(user_info[0]);
+                user.setSurname(user_info[1]);
+                user.setFacebookId(user_info[2]);
                 FriendItem friendItem = new FriendItem(user);
 
                 fastAdapter.add(0, friendItem);
@@ -162,7 +167,7 @@ public class FriendsActivity extends AppCompatActivity {
                                 String surname = friend.getString("last_name");
                                 String[] fields = {id, name, surname};
                                 friends_list.add(fields);
-                                friends.add(name + " " + surname + " - " + id);
+                                friends.add(name + " " + surname + " " + id);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
