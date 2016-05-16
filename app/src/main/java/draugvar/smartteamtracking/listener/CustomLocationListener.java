@@ -11,9 +11,6 @@ import java.util.concurrent.ExecutionException;
 import draugvar.smartteamtracking.rest.UpdateUserGPSCoordinates;
 import draugvar.smartteamtracking.singleton.WorkflowManager;
 
-/**
- * Created by StefanoMBP on 5/16/16.
- */
 public class CustomLocationListener implements LocationListener{
     private Activity activity;
 
@@ -47,7 +44,7 @@ public class CustomLocationListener implements LocationListener{
         WorkflowManager.getWorkflowManager().setMyselfGPSLongitude(longitude);
 
         //Updating UI
-        // WorkflowManager.getWorkflowManager().updateGroupAdapter(WorkflowManager.getWorkflowManager().getMyself());
+        //TO DO
     }
 
     @Override

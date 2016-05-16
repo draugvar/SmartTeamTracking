@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         setFastAdapter();
 
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        WorkflowManager.getWorkflowManager().setLocationManager(locationManager);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {return;}
         locationManager.addGpsStatusListener(new CustomGpsStatusListener());
 
