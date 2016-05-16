@@ -34,12 +34,14 @@ import draugvar.smartteamtracking.adapter.GroupItem;
 import draugvar.smartteamtracking.adapter.PendingGroupItem;
 import draugvar.smartteamtracking.data.Group;
 import draugvar.smartteamtracking.data.Myself;
+import draugvar.smartteamtracking.data.User;
 import draugvar.smartteamtracking.listener.CustomGpsStatusListener;
 import draugvar.smartteamtracking.listener.CustomLocationListener;
 import draugvar.smartteamtracking.rest.AddContains;
 import draugvar.smartteamtracking.rest.GetGroupsOfUsers;
 import draugvar.smartteamtracking.rest.GetPendingGroupsOfUsers;
 import draugvar.smartteamtracking.rest.RemovePending;
+import draugvar.smartteamtracking.rest.UpdateUserGPSCoordinates;
 import draugvar.smartteamtracking.singleton.WorkflowManager;
 import io.realm.Realm;
 
@@ -83,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         catch (SecurityException e){
             Log.d("Location","Location not enabled");
         }
+
     }
 
 

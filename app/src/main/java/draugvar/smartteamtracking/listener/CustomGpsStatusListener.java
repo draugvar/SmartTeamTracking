@@ -4,6 +4,7 @@ import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.util.Log;
 
+import draugvar.smartteamtracking.data.User;
 import draugvar.smartteamtracking.rest.UpdateUserGPSCoordinates;
 import draugvar.smartteamtracking.singleton.WorkflowManager;
 
@@ -31,7 +32,11 @@ public class CustomGpsStatusListener implements GpsStatus.Listener {
                     WorkflowManager.getWorkflowManager().setInside(false);
             } else if (!WorkflowManager.getWorkflowManager().isInside()) {
                 WorkflowManager.getWorkflowManager().setInside(true);
-                new UpdateUserGPSCoordinates(WorkflowManager.getWorkflowManager().getMyselfId(),null,null).execute();
+                User user = new User();
+                user.setUid(WorkflowManager.getWorkflowManager().getMyselfId());
+                user.setLatGPS(null);
+                user.setLonGPS(null);
+                new UpdateUserGPSCoordinates(user).execute();
                 Log.d("Location","Set GPS values to null");
             }
         }

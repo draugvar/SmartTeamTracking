@@ -8,6 +8,7 @@ import android.util.Log;
 
 import java.util.concurrent.ExecutionException;
 
+import draugvar.smartteamtracking.data.User;
 import draugvar.smartteamtracking.rest.UpdateUserGPSCoordinates;
 import draugvar.smartteamtracking.singleton.WorkflowManager;
 
@@ -25,8 +26,11 @@ public class CustomLocationListener implements LocationListener{
         Log.d("Location", "Longitude: " + longitude + " Latitude: " + latitude);
         boolean result = false;
 
-        try {
-            result = new UpdateUserGPSCoordinates(WorkflowManager.getWorkflowManager().getMyselfId(),latitude,longitude).execute().get();
+        try { User user = new User();
+            user.setUid(WorkflowManager.getWorkflowManager().getMyselfId());
+            user.setLatGPS(latitude);
+            user.setLonGPS(longitude);
+            result = new UpdateUserGPSCoordinates(user).execute().get();
         } catch (InterruptedException e) {
             Log.d("Rest","Cannot update user GPS coordinates");
             e.printStackTrace();
