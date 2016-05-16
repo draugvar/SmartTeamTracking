@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private Realm realm;
     private FastItemAdapter fastAdapter;
 
+    private static final int PERMISSION_REQUEST_CODE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,27 +67,16 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(),FriendsActivity.class);
+                Intent intent = new Intent(getApplicationContext(), FriendsActivity.class);
                 startActivity(intent);
             }
         });
         setFastAdapter();
 
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        WorkflowManager.getWorkflowManager().setLocationManager(locationManager);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {return;}
-        locationManager.addGpsStatusListener(new CustomGpsStatusListener());
-
-        //GPS initialization
-
-        CustomLocationListener locationListener = new CustomLocationListener(this);
-        try{
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 5, locationListener);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}
+                    , PERMISSION_REQUEST_CODE);
         }
-        catch (SecurityException e){
-            Log.d("Location","Location not enabled");
-        }
-
     }
 
 
@@ -101,21 +92,21 @@ public class MainActivity extends AppCompatActivity {
             groupList = new GetGroupsOfUsers(myselfId).execute().get();
             groupPendingList = new GetPendingGroupsOfUsers(myselfId).execute().get();
         } catch (InterruptedException | ExecutionException e) {
-            Log.d("Rest","MainActivity - onResume - Cannot retrieve groupList or groupPendingList ");
+            Log.d("Rest", "MainActivity - onResume - Cannot retrieve groupList or groupPendingList ");
             e.printStackTrace();
         }
 
         assert groupPendingList != null;
-        for(Group group: groupPendingList){
+        for (Group group : groupPendingList) {
             PendingGroupItem groupItem = new PendingGroupItem(group);
-            if(!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
-                fastAdapter.add(0,groupItem);
+            if (!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
+                fastAdapter.add(0, groupItem);
         }
 
         assert groupList != null;
-        for(Group group: groupList){
+        for (Group group : groupList) {
             GroupItem groupItem = new GroupItem(group);
-            if(!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
+            if (!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
             {
                 fastAdapter.add(groupItem);
             }
@@ -144,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setBeaconManager(){
+    public void setBeaconManager() {
         final BeaconManager beaconManager;
         // ----- Estimote Beacon set-up ----- //
         beaconManager = new BeaconManager(getApplicationContext());
@@ -157,11 +148,12 @@ public class MainActivity extends AppCompatActivity {
                         "Current security wait time is 15 minutes, "
                                 + "and it's a 5 minute walk from security to the gate. "
                                 + "Looks like you've got plenty of time!");*/
-                for(com.estimote.sdk.Beacon beacon: list){
+                for (com.estimote.sdk.Beacon beacon : list) {
                     Log.d("ESTIMOTE", beacon.getProximityUUID().toString() + " " + beacon.getMajor()
-                            + " " +  beacon.getMinor());
+                            + " " + beacon.getMinor());
                 }
             }
+
             @Override
             public void onExitedRegion(Region region) {
                 // could add an "exit" notification too if you want (-:
@@ -179,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void setFastAdapter(){
+    public void setFastAdapter() {
         //init our FastAdapter which will manage everything
         fastAdapter = new FastItemAdapter();
 
@@ -235,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
         fastAdapter.withOnClickListener(new FastAdapter.OnClickListener() {
             @Override
             public boolean onClick(View v, IAdapter adapter, IItem item, final int position) {
-                if(item instanceof PendingGroupItem){
+                if (item instanceof PendingGroupItem) {
                     final PendingGroupItem pendingGroupItem = (PendingGroupItem) item;
                     final long uid = realm.where(Myself.class).findFirst().getUser().getUid();
 
@@ -270,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
                     AlertDialog alert = builder.create();
                     alert.show();
 
-                } else if(item instanceof GroupItem) {
+                } else if (item instanceof GroupItem) {
                     GroupItem groupItem = (GroupItem) item;
                     Intent intent = new Intent(getApplicationContext(), GroupActivity.class);
                     intent.putExtra("gid", groupItem.group.getGid());
@@ -279,5 +271,30 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (permissions.length == 1 &&
+                    permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION) &&
+                            grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                try {
+                    Log.d("Location","Inside onRequestPermissionResult");
+                    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                    WorkflowManager.getWorkflowManager().setLocationManager(locationManager);
+                    locationManager.addGpsStatusListener(new CustomGpsStatusListener());
+
+                    //GPS initialization
+
+                    CustomLocationListener locationListener = new CustomLocationListener(this);
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 5, locationListener);
+                } catch (SecurityException e) {
+                    Log.d("Location", "Location not enabled");
+                }
+            } else {
+                Log.d("Location", "Cannot start position related functions. This user position will not be updated.");
+            }
+        }
     }
 }

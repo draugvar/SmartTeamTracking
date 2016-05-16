@@ -43,7 +43,7 @@ public class GroupItem extends AbstractItem<GroupItem, GroupItem.ViewHolder> {
         //if(pending)
             //viewHolder.description.setText("Pending");
         //set the text for number of parties
-        viewHolder.num_users.setText(group.countUsers());
+        viewHolder.num_users.setText(group.countUsers() + "");
         //set initials
         viewHolder.initials.setText(group.getName().substring(0,1));
     }

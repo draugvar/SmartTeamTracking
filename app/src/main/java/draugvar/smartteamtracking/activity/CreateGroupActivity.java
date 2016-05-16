@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +28,9 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.parceler.Parcels;
 
+import java.security.Provider;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import draugvar.smartteamtracking.R;
@@ -46,8 +49,8 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
     private EditText group_name;
     private Realm realm;
     private SeekBar seekBar;
-    private double latitude;
-    private double longitude;
+    private Double latitude;
+    private Double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +70,8 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
         circleOptions = new CircleOptions()
                 .radius(1) // In meters
                 .strokeWidth(3)
-                .strokeColor(Color.argb(40,20,20,20))
-                .fillColor(Color.argb(20,20,20,20));
+                .strokeColor(Color.argb(40, 20, 20, 20))
+                .fillColor(Color.argb(20, 20, 20, 20));
 
         // MAP init
         MapFragment mapFragment = (MapFragment) getFragmentManager()
@@ -85,7 +88,7 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mMap.clear();
-                circleOptions.radius(progress*50);
+                circleOptions.radius(progress * 50);
                 mMap.addCircle(circleOptions);
             }
 
@@ -103,8 +106,9 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
     }
 
     public void centerMyLocation(View view) {
-        Location location = locationManager.getLastKnownLocation(locationManager
-                .getBestProvider(new Criteria(), true));
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (location == null)
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         latitude = location.getLatitude();
         longitude = location.getLongitude();
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -120,20 +124,19 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            Location location = locationManager.getLastKnownLocation(locationManager
-                    .getBestProvider(new Criteria(), true));
-            if(location != null) {
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location == null)
+                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 12));
-            }
         } else {
             // Show rationale and request permission.
+            Log.d("CreateGroupActivity", "shish");
         }
     }
 
@@ -155,7 +158,7 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
         if (id == R.id.accept_group) {
             ArrayList<User> users = Parcels.unwrap(getIntent().getParcelableExtra("users"));
             ArrayList<String> fb_id = new ArrayList<>();
-            for(User user : users){
+            for (User user : users) {
                 fb_id.add(user.getFacebookId());
             }
             String g_name = group_name.getText().toString();
@@ -165,7 +168,7 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
             group.setLonCenter(longitude);
             group.setRadius((int) circleOptions.getRadius());
             try {
-                long gid = new CreateGroup(WorkflowManager.getWorkflowManager().getMyselfId(), group ).execute().get();
+                long gid = new CreateGroup(WorkflowManager.getWorkflowManager().getMyselfId(), group).execute().get();
                 new InviteUsersToGroup(gid, fb_id).execute();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
