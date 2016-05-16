@@ -1,6 +1,7 @@
 package draugvar.smartteamtracking.activity;
 
 import android.Manifest;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,7 +26,9 @@ import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.IItem;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
+import com.mikepenz.fastadapter.items.AbstractItem;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -98,19 +101,45 @@ public class MainActivity extends AppCompatActivity {
         }
 
         assert groupPendingList != null;
+        assert groupList != null;
+
+
+
+
         for (Group group : groupPendingList) {
-            PendingGroupItem groupItem = new PendingGroupItem(group);
+             /*PendingGroupItem groupItem = new PendingGroupItem(group);
             if (!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
-                fastAdapter.add(0, groupItem);
+                fastAdapter.add(0, groupItem);*/
+            Iterator<AbstractItem> itemIterator = fastAdapter.getAdapterItems().iterator();
+            boolean found = false;
+            while(itemIterator.hasNext()){
+                AbstractItem item = itemIterator.next();
+                if(item instanceof PendingGroupItem){
+                    if(group.equals(((PendingGroupItem) item).group))
+                        found = true;
+                }
+            }
+            if(!found)
+                fastAdapter.add(0,new PendingGroupItem(group));
         }
 
-        assert groupList != null;
         for (Group group : groupList) {
-            GroupItem groupItem = new GroupItem(group);
+           /* GroupItem groupItem = new GroupItem(group);
             if (!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
             {
                 fastAdapter.add(groupItem);
+            }*/
+            Iterator<AbstractItem> itemIterator = fastAdapter.getAdapterItems().iterator();
+            boolean found = false;
+            while(itemIterator.hasNext()){
+                AbstractItem item = itemIterator.next();
+                if(item instanceof GroupItem){
+                    if(group.equals(((GroupItem) item).group))
+                        found = true;
+                }
             }
+            if(!found)
+                fastAdapter.add(new GroupItem(group));
         }
     }
 
