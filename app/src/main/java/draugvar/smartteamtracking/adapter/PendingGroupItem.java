@@ -25,7 +25,7 @@ public class PendingGroupItem extends AbstractItem<PendingGroupItem, PendingGrou
     //The layout to be used for this type of item
     @Override
     public int getLayoutRes() {
-        return R.layout.group_item;
+        return R.layout.pending_group_item;
     }
 
     //The logic to bind your data to the view
