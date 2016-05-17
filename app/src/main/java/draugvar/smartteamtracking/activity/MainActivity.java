@@ -182,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
                     if(mBeacon.getMeasuredPower() < beacon.getMeasuredPower())
                         mBeacon = beacon;
                 }
+                Log.d("Beacon", mBeacon.toString());
                 new AddInRange(WorkflowManager.getWorkflowManager().getMyselfId(),
                         mBeacon.getMajor(),
                         mBeacon.getMinor()).execute();

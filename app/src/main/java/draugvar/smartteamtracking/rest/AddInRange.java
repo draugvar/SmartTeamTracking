@@ -33,6 +33,7 @@ public class AddInRange extends AsyncTask<Void,Void,Boolean> {
         Beacon beacon = new Beacon();
         beacon.setMajor(major);
         beacon.setMinor(minor);
+        Log.d("addInRange", beacon.toString());
 
         Boolean result = restTemplate.postForObject(url, beacon, Boolean.class);
         Log.d("Rest", "Returning " + result);
