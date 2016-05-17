@@ -9,6 +9,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -156,39 +157,39 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.accept_group) {
+            item.setEnabled(false);
             ArrayList<User> users = Parcels.unwrap(getIntent().getParcelableExtra("users"));
-            ArrayList<String> fb_id = new ArrayList<>();
+            final ArrayList<String> fb_id = new ArrayList<>();
             for (User user : users) {
                 fb_id.add(user.getFacebookId());
             }
             String g_name = group_name.getText().toString();
-            Group group = new Group();
-            group.setName(g_name);
-            group.setLatCenter(latitude);
-            group.setLonCenter(longitude);
-            group.setRadius((int) circleOptions.getRadius());
-            try {
-                long gid = new CreateGroup(WorkflowManager.getWorkflowManager().getMyselfId(), group).execute().get();
-                new InviteUsersToGroup(gid, fb_id).execute();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+            if(g_name.length() >= 3) {
+                final Group group = new Group();
+                group.setName(g_name);
+                group.setLatCenter(latitude);
+                group.setLonCenter(longitude);
+                group.setRadius((int) circleOptions.getRadius());
+                final Context context = getApplicationContext();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            long gid = new CreateGroup(
+                                    WorkflowManager.getWorkflowManager().getMyselfId(), group).execute().get();
+                            new InviteUsersToGroup(gid, fb_id).execute();
+                        } catch (InterruptedException | ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                        Intent intent = new Intent(context, MainActivity.class);
+                        startActivity(intent);
+                    }
+                });
+            } else {
+                Snackbar.make(item.getActionView(), "Group name must contains at lest 3 chars", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
-            //THIS NEEDS TO MAKE REST CALLS!!!
-            /*String g_name = group_name.getText().toString();
-            realm.beginTransaction();
-            //Group mGroup = realm.createObject(Group.class);
-            Group mGroup = new Group();
-            mGroup.setName(g_name);
-            mGroup.setGid(0);
-            ArrayList<User> users = Parcels.unwrap(getIntent().getParcelableExtra("users"));
-            for(User u: users){
-                mGroup.addUser(u);
-            }
-            //realm.commitTransaction();*/
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

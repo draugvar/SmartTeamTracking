@@ -8,9 +8,6 @@ import draugvar.smartteamtracking.data.User;
 import draugvar.smartteamtracking.rest.UpdateUserGPSCoordinates;
 import draugvar.smartteamtracking.singleton.WorkflowManager;
 
-/**
- * Created by StefanoMBP on 5/16/16.
- */
 public class CustomGpsStatusListener implements GpsStatus.Listener {
 
     @Override

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,6 +44,7 @@ public class FriendsActivity extends AppCompatActivity {
     private ArrayList<User> users = new ArrayList<User>();
     private ArrayList<String[]> friends_list;
     private Context context;
+    private FastItemAdapter<FriendItem> fastAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +62,7 @@ public class FriendsActivity extends AppCompatActivity {
         editText.setEnabled(false);
 
         //create our FastAdapter which will manage everything
-        final FastItemAdapter<FriendItem> fastAdapter = new FastItemAdapter<>();
+        fastAdapter = new FastItemAdapter<>();
 
         //set our adapters to the RecyclerView
         //we wrap our FastAdapter inside the ItemAdapter -> This allows us to chain adapters for more complex useCases
@@ -108,16 +110,25 @@ public class FriendsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String[] user_info = editText.getText().toString().split(" ");
-                User user = new User();
-                user.setName(user_info[0]);
-                user.setSurname(user_info[1]);
-                user.setFacebookId(user_info[2]);
-                FriendItem friendItem = new FriendItem(user);
+                for(String[] fb_friends: friends_list){
+                    if(user_info[0].equals(fb_friends[0]) && user_info[1].equals(fb_friends[1])) {
+                        User user = new User();
+                        user.setName(fb_friends[0]);
+                        user.setSurname(fb_friends[1]);
+                        user.setFacebookId(fb_friends[2]);
+                        FriendItem friendItem = new FriendItem(user);
 
-                fastAdapter.add(0, friendItem);
-                recyclerView.scrollToPosition(0);
-                editText.setText("");
-                users.add(0, user);
+                        fastAdapter.add(0, friendItem);
+                        recyclerView.scrollToPosition(0);
+                        editText.setText("");
+                        users.add(0, user);
+                        return;
+                    }
+                }
+                // friends not found
+                Snackbar.make(view, "Credentials doesn't match to any of your friends", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+
             }
         });
         getFriends();
@@ -139,10 +150,15 @@ public class FriendsActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.accept_friends) {
-            Intent intent = new Intent(this, CreateGroupActivity.class);
-            intent.putExtra("users", Parcels.wrap(users));
-            startActivity(intent);
-            return true;
+            if(fastAdapter.getItemCount() > 0) {
+                Intent intent = new Intent(this, CreateGroupActivity.class);
+                intent.putExtra("users", Parcels.wrap(users));
+                startActivity(intent);
+                return true;
+            } else {
+                Snackbar.make(item.getActionView(), "No friends selected", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -165,9 +181,9 @@ public class FriendsActivity extends AppCompatActivity {
                                 String id = friend.getString("id");
                                 String name = friend.getString("first_name");
                                 String surname = friend.getString("last_name");
-                                String[] fields = {id, name, surname};
+                                String[] fields = {name, surname, id};
                                 friends_list.add(fields);
-                                friends.add(name + " " + surname + " " + id);
+                                friends.add(name + " " + surname);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

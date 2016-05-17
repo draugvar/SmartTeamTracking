@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("LoginTask", "Inside onCreate of MainActivity");
 
+        setFastAdapter();
+
         //Init fab
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;
@@ -76,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        setFastAdapter();
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);

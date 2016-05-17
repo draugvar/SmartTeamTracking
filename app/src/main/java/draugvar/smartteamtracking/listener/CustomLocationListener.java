@@ -31,14 +31,11 @@ public class CustomLocationListener implements LocationListener{
             user.setLatGPS(latitude);
             user.setLonGPS(longitude);
             result = new UpdateUserGPSCoordinates(user).execute().get();
-        } catch (InterruptedException e) {
-            Log.d("Rest","Cannot update user GPS coordinates");
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             Log.d("Rest","Cannot update user GPS coordinates");
             e.printStackTrace();
         }
-        if(result == false){
+        if(!result){
             Log.d("Location","Cannot update user GPS coordinates. Returned false");
             return;
         }
