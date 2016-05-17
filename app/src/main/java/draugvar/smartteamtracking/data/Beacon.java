@@ -10,8 +10,8 @@ import io.realm.RealmObject;
 @Parcel
 public class Beacon extends RealmObject{
     String uuid;
-    int major;
-    int minor;
+    Integer major;
+    Integer minor;
     Long beaconIdentifier; //KEY
     String name;
     Double latBeacon;
@@ -19,15 +19,15 @@ public class Beacon extends RealmObject{
 
     public Beacon() {
         uuid = null;
-        major = 0;
-        minor = 0;
+        major = null;
+        minor = null;
         beaconIdentifier = null;
         name = null;
         latBeacon = null;
         lonBeacon = null;
     }
 
-    public Beacon(String uuid, int major, int minor, Long beaconIdentifier, String name,
+    public Beacon(String uuid, Integer major, Integer minor, Long beaconIdentifier, String name,
                   Double latBeacon, Double lonBeacon) {
         this.uuid = uuid;
         this.major = major;
@@ -46,19 +46,19 @@ public class Beacon extends RealmObject{
         this.uuid = uuid;
     }
 
-    public int getMajor() {
+    public Integer getMajor() {
         return major;
     }
 
-    public void setMajor(int major) {
+    public void setMajor(Integer major) {
         this.major = major;
     }
 
-    public int getMinor() {
+    public Integer getMinor() {
         return minor;
     }
 
-    public void setMinor(int minor) {
+    public void setMinor(Integer minor) {
         this.minor = minor;
     }
 
