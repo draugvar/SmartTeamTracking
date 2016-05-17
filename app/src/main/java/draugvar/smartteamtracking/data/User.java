@@ -136,6 +136,7 @@ public class User extends RealmObject {
                 ", lonGPS=" + lonGPS +
                 ", authToken='" + authToken + '\'' +
                 ", facebookId='" + facebookId + '\'' +
+                ", beacon=" + beacon +
                 '}';
     }
 
