@@ -48,7 +48,7 @@ public class SplashActivity extends AppCompatActivity {
             Log.e("SplashScreen", e.getMessage(), e);
         }
 
-        int SPLASH_TIME_OUT = 100;
+        int SPLASH_TIME_OUT = 10;
         new Handler().postDelayed(new Runnable() {
 
             /*

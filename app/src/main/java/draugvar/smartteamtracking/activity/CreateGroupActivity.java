@@ -9,6 +9,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -174,7 +175,7 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
                 group.setLonCenter(longitude);
                 group.setRadius((int) circleOptions.getRadius());
                 final Context context = getApplicationContext();
-                runOnUiThread(new Runnable() {
+                new Handler().post(new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -185,7 +186,9 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
                             e.printStackTrace();
                         }
                         Intent intent = new Intent(context, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
+                        finish();
                     }
                 });
             } else {
@@ -193,6 +196,7 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
                 item.setEnabled(true);
             }
         }
+        finish();
         return super.onOptionsItemSelected(item);
     }
 }

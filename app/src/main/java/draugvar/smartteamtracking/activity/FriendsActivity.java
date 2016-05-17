@@ -1,8 +1,10 @@
 package draugvar.smartteamtracking.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -38,6 +40,7 @@ import java.util.LinkedList;
 import draugvar.smartteamtracking.R;
 import draugvar.smartteamtracking.adapter.FriendItem;
 import draugvar.smartteamtracking.data.User;
+import draugvar.smartteamtracking.singleton.WorkflowManager;
 
 public class FriendsActivity extends AppCompatActivity {
     private AutoCompleteTextView editText;

@@ -16,6 +16,7 @@ import io.realm.RealmConfiguration;
 public class WorkflowManager {
 
     private static WorkflowManager instance = null;
+    public static String RESULT_CLOSE_ALL = "result_close_all";
 
     // Data
     private Myself myself;
