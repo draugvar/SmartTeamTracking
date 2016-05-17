@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutionException;
 
 import draugvar.smartteamtracking.R;
 import draugvar.smartteamtracking.adapter.FriendItem;
+import draugvar.smartteamtracking.adapter.GroupMemberItem;
 import draugvar.smartteamtracking.data.Group;
 import draugvar.smartteamtracking.data.User;
 import draugvar.smartteamtracking.rest.GetUsers;
@@ -54,8 +55,8 @@ public class GroupActivity extends AppCompatActivity implements OnMapReadyCallba
         try {
             Set<User> users = new GetUsers().execute(gid).get();
             for(User user: users) {
-                FriendItem friendItem = new FriendItem(user);
-                fastAdapter.add(friendItem);
+                GroupMemberItem groupMemberItem = new GroupMemberItem(user);
+                fastAdapter.add(groupMemberItem);
             }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();

@@ -3,4 +3,5 @@
     <item name="pending_group_item" type="id" />
     <item name="group_item" type="id" />
     <item name="friend_item" type="id" />
+    <item name="group_member_item" type="id" />
 </resources>

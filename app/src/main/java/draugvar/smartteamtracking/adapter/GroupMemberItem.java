@@ -1,5 +1,7 @@
 package draugvar.smartteamtracking.adapter;
 
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -8,26 +10,26 @@ import com.mikepenz.fastadapter.items.AbstractItem;
 import com.mikepenz.fastadapter.utils.ViewHolderFactory;
 
 import draugvar.smartteamtracking.R;
-import draugvar.smartteamtracking.data.Group;
+import draugvar.smartteamtracking.data.User;
 
-public class GroupItem extends AbstractItem<GroupItem, GroupItem.ViewHolder> {
+public class GroupMemberItem extends AbstractItem<GroupMemberItem, GroupMemberItem.ViewHolder> {
     private static final ViewHolderFactory<? extends ViewHolder> FACTORY = new ItemFactory();
-    public Group group;
+    public User user;
 
-    public GroupItem(Group group){
-        this.group = group;
+    public GroupMemberItem(User user){
+        this.user = user;
     }
 
     //The unique ID for this type of item
     @Override
     public int getType() {
-        return R.id.group_item;
+        return R.id.group_member_item;
     }
 
     //The layout to be used for this type of item
     @Override
     public int getLayoutRes() {
-        return R.layout.group_item;
+        return R.layout.group_member_item;
     }
 
     //The logic to bind your data to the view
@@ -35,53 +37,42 @@ public class GroupItem extends AbstractItem<GroupItem, GroupItem.ViewHolder> {
     public void bindView(ViewHolder viewHolder) {
         //call super so the selection is already handled for you
         super.bindView(viewHolder);
-
+        final Context context = viewHolder.status.getContext();
         //bind our data
         //set the text for the name
-        viewHolder.name.setText(group.getName());
+        viewHolder.name.setText(user.getName());
         //set the text for the description or hide
-        //if(pending)
-        viewHolder.description.setText("Inside group range");
-        //set the text for number of parties
-        viewHolder.num_users.setText("");
-        //set initials
-        viewHolder.initials.setText(group.getName().substring(0,1));
+        viewHolder.description.setText(user.getSurname());
+        //set the text for status of parties
+        if(user.getBeacon() == null)
+        {
+            String beacon = "No Beacon";
+            viewHolder.status.setText(beacon);
+        }else {
+            viewHolder.status.setText(user.getBeacon().getName());
+        }
+        //set the text for initials // to do elaborate!
+        if(!user.getName().isEmpty()) {
+            String init = user.getName().substring(0, 1) + user.getSurname().substring(0, 1);
+            viewHolder.initials.setText(init);
+        }
     }
 
     //The viewHolder used for this item. This viewHolder is always reused by the RecyclerView so scrolling is blazing fast
     protected static class ViewHolder extends RecyclerView.ViewHolder {
         protected TextView name;
         protected TextView description;
-        protected TextView num_users;
+        protected TextView status;
         protected TextView initials;
 
         public ViewHolder(View view) {
             super(view);
-            this.name = (TextView) view.findViewById(R.id.group_name);
-            this.description = (TextView) view.findViewById(R.id.group_description);
-            this.num_users = (TextView) view.findViewById(R.id.num_users);
-            this.initials = (TextView) view.findViewById(R.id.group_initials);
+            this.name = (TextView) view.findViewById(R.id.group_member_name);
+            this.description = (TextView) view.findViewById(R.id.group_member_description);
+            this.status = (TextView) view.findViewById(R.id.group_member_status);
+            this.initials = (TextView) view.findViewById(R.id.group_member_initials);
         }
     }
-
-    /*@Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        GroupItem groupItem = (GroupItem) o;
-
-        return group != null ? group.equals(groupItem.group) : groupItem.group == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (group != null ? group.hashCode() : 0);
-        return result;
-    }*/
 
     protected static class ItemFactory implements ViewHolderFactory<ViewHolder> {
         @Override
