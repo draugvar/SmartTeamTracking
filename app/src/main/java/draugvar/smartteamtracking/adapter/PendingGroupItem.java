@@ -40,9 +40,10 @@ public class PendingGroupItem extends AbstractItem<PendingGroupItem, PendingGrou
         //set the text for the name
         viewHolder.name.setText(group.getName());
         //set the text for the description or hide
-        viewHolder.description.setText("Pending");
+        String description = "Pending";
+        viewHolder.description.setText(description);
         //set the text for number of parties
-        viewHolder.num_users.setText(group.countUsers() + "");
+        viewHolder.num_users.setText("");
         //set initials
         viewHolder.initials.setText(group.getName().substring(0,1));
     }

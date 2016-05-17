@@ -11,13 +11,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.mikepenz.fastadapter.FastAdapter;
+import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 
 import org.parceler.Parcels;
@@ -50,8 +54,6 @@ public class GroupActivity extends AppCompatActivity implements OnMapReadyCallba
         group = Parcels.unwrap(getIntent().getParcelableExtra("group"));
         getSupportActionBar().setTitle(group.getName());
 
-        Long gid = group.getGid();
-
         // MAP init
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.group_map);
@@ -60,8 +62,13 @@ public class GroupActivity extends AppCompatActivity implements OnMapReadyCallba
         //create our FastAdapter which will manage everything
         fastAdapter = new FastItemAdapter<>();
 
-        //set our adapters to the RecyclerView
-        //we wrap our FastAdapter inside the ItemAdapter -> This allows us to chain adapters for more complex useCases
+        setFastAdapter();
+    }
+
+    private void setFastAdapter() {
+        Long gid = group.getGid();
+        // set our adapters to the RecyclerView
+        // we wrap our FastAdapter inside the ItemAdapter -> This allows us to chain adapters for more complex useCases
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.group_friends);
         assert recyclerView != null;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -77,13 +84,22 @@ public class GroupActivity extends AppCompatActivity implements OnMapReadyCallba
             e.printStackTrace();
         }
 
-        //NEEDS TO BE POPULATED WITH REST CALLS!
-        /*Realm realm = Realm.getDefaultInstance();
-        long gid = getIntent().getLongExtra("gid", 0);
-        Group group = realm.where(Group.class).equalTo("gid", gid).findFirst();
-        for(User user: group.getUsers()){
-            fastAdapter.add(new FriendItem(user));
-        }*/
+        fastAdapter.withOnClickListener(new FastAdapter.OnClickListener<GroupMemberItem>() {
+            @Override
+            public boolean onClick(View v, IAdapter<GroupMemberItem> adapter, GroupMemberItem item, int position) {
+                LatLng latlng;
+                if(item.user.getBeacon() == null && item.user.getLatGPS() != null
+                        && item.user.getLonGPS()!= null) {
+                    latlng = new LatLng(item.user.getLatGPS(), item.user.getLonGPS());
+                    mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(latlng, 12));
+                } else if(item.user.getBeacon() != null){
+                    latlng = new LatLng(item.user.getBeacon().getLatBeacon(),
+                                        item.user.getBeacon().getLonBeacon());
+                    mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(latlng, 12));
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -99,9 +115,10 @@ public class GroupActivity extends AppCompatActivity implements OnMapReadyCallba
             // Show rationale and request permission.
             Log.d("CreateGroupActivity", "No permissions");
         }
-        LatLng latLng = null;
+        LatLng latLng;
         for(GroupMemberItem groupMemberItem: fastAdapter.getAdapterItems()){
-            if(groupMemberItem.user.getBeacon() == null && groupMemberItem.user.getLatGPS() != null && groupMemberItem.user.getLonGPS()!=null) {
+            if(groupMemberItem.user.getBeacon() == null && groupMemberItem.user.getLatGPS() != null
+                    && groupMemberItem.user.getLonGPS()!=null) {
                 latLng = new LatLng(groupMemberItem.user.getLatGPS(), groupMemberItem.user.getLonGPS());
                 mMap.addMarker(new MarkerOptions().position(latLng).title(groupMemberItem.user.getName()));
             } else if(groupMemberItem.user.getBeacon() != null) {
