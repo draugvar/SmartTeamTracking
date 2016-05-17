@@ -5,6 +5,8 @@ import android.util.Log;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.parceler.Parcel;
+
 import java.util.List;
 
 import io.realm.RealmList;
@@ -12,6 +14,7 @@ import io.realm.RealmObject;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 
+@Parcel
 public class Group{
 
     @JsonProperty("id")

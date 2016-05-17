@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -28,6 +29,8 @@ import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.IItem;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 import com.mikepenz.fastadapter.items.AbstractItem;
+
+import org.parceler.Parcels;
 
 import java.util.Iterator;
 import java.util.List;
@@ -306,8 +309,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (item instanceof GroupItem) {
                     GroupItem groupItem = (GroupItem) item;
                     Intent intent = new Intent(getApplicationContext(), GroupActivity.class);
-                    intent.putExtra("group_name", groupItem.group.getName());
-                    intent.putExtra("gid", groupItem.group.getGid());
+                    intent.putExtra("group", Parcels.wrap(groupItem.group));
                     startActivity(intent);
                 }
                 return true;
