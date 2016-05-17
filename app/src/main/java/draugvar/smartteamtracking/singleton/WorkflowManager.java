@@ -7,6 +7,7 @@ import android.util.Log;
 import java.util.LinkedList;
 import java.util.List;
 
+import draugvar.smartteamtracking.data.Beacon;
 import draugvar.smartteamtracking.data.Group;
 import draugvar.smartteamtracking.data.Myself;
 import draugvar.smartteamtracking.data.User;
@@ -21,9 +22,18 @@ public class WorkflowManager {
     // Data
     private Myself myself;
     private Long myselfId;
-    private double myselfGPSLatitude;
-    private double myselfGPSLongitude;
+    private Double myselfGPSLatitude;
+    private Double myselfGPSLongitude;
     private boolean isInside;
+    private Beacon currentBeacon;
+
+    public Beacon getCurrentBeacon() {
+        return currentBeacon;
+    }
+
+    public void setCurrentBeacon(Beacon currentBeacon) {
+        this.currentBeacon = currentBeacon;
+    }
 
     public boolean isInside() {
         return isInside;
@@ -83,19 +93,19 @@ public class WorkflowManager {
     }
 
 
-    public double getMyselfGPSLatitude() {
+    public Double getMyselfGPSLatitude() {
         return myselfGPSLatitude;
     }
 
-    public void setMyselfGPSLatitude(double myselfGPSLatitude) {
+    public void setMyselfGPSLatitude(Double myselfGPSLatitude) {
         this.myselfGPSLatitude = myselfGPSLatitude;
     }
 
-    public double getMyselfGPSLongitude() {
+    public Double getMyselfGPSLongitude() {
         return myselfGPSLongitude;
     }
 
-    public void setMyselfGPSLongitude(double myselfGPSLongitude) {
+    public void setMyselfGPSLongitude(Double myselfGPSLongitude) {
         this.myselfGPSLongitude = myselfGPSLongitude;
     }
 }

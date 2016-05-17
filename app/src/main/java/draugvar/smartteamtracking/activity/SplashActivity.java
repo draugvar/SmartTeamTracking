@@ -31,9 +31,8 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        Log.d("LoginTask","Inside onCreate of SplashActivity");
 
+        /*
         // Add code to print out the key hash
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
@@ -47,6 +46,7 @@ public class SplashActivity extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException e) {
             Log.e("SplashScreen", e.getMessage(), e);
         }
+        */
 
         int SPLASH_TIME_OUT = 100;
         new Handler().postDelayed(new Runnable() {
@@ -60,6 +60,9 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 // This method will be executed once the timer is over
                 // Start your app main activity
+                FacebookSdk.sdkInitialize(getApplicationContext());
+                Log.d("LoginTask","Inside onCreate of SplashActivity");
+
                 Realm realm = Realm.getDefaultInstance();
                 if(AccessToken.getCurrentAccessToken() == null) {
                     Intent i = new Intent(SplashActivity.this, LoginActivity.class);

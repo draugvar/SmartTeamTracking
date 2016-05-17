@@ -21,8 +21,8 @@ public class CustomLocationListener implements LocationListener{
 
     @Override
     public void onLocationChanged(Location loc) {
-        double longitude = loc.getLongitude();
-        double latitude = loc.getLatitude();
+        Double longitude = loc.getLongitude();
+        Double latitude = loc.getLatitude();
         Log.d("Location", "Longitude: " + longitude + " Latitude: " + latitude);
         boolean result = false;
 
@@ -43,9 +43,6 @@ public class CustomLocationListener implements LocationListener{
         //At this point we update our GPS coordinates in the singleton
         WorkflowManager.getWorkflowManager().setMyselfGPSLatitude(latitude);
         WorkflowManager.getWorkflowManager().setMyselfGPSLongitude(longitude);
-
-        //Updating UI
-        //TO DO
     }
 
     @Override

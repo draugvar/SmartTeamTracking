@@ -85,6 +85,10 @@
         <activity
             android:name=".activity.LoginActivity"
             android:screenOrientation="portrait" />
+
+        <service
+            android:name=".service.UpdateGroup"
+            android:exported="false"></service>
     </application>
 
 </manifest>
