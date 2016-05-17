@@ -9,16 +9,19 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -186,8 +189,8 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
                     }
                 });
             } else {
-                Snackbar.make(findViewById(R.id.coordinator_create_group), "Group name must contains at lest 3 chars",
-                        Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                Toast.makeText(this, "Group name must contains at least 3 chars!", Toast.LENGTH_SHORT).show();
+                item.setEnabled(true);
             }
         }
         return super.onOptionsItemSelected(item);

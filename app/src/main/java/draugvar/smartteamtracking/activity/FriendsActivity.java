@@ -160,7 +160,6 @@ public class FriendsActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         }
-
         return super.onOptionsItemSelected(item);
     }
 
