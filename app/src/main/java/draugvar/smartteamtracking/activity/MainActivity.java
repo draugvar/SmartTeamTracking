@@ -177,24 +177,7 @@ public class MainActivity extends AppCompatActivity {
         beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
             @Override
             public void onEnteredRegion(Region region, List<Beacon> list) {
-                beaconManager.setRangingListener( new BeaconManager.RangingListener(){
-
-                    @Override
-                    public void onBeaconsDiscovered(Region region, List<Beacon> list) {
-                        if (!list.isEmpty()) {
-                            Beacon nearestBeacon = list.get(0);
-                            for (Beacon beacon : list) {
-                                if(nearestBeacon.getMeasuredPower() < beacon.getMeasuredPower())
-                                    nearestBeacon = beacon;
-                            }
-                            new AddInRange(WorkflowManager.getWorkflowManager().getMyselfId(),
-                                    nearestBeacon.getMajor(),
-                                    nearestBeacon.getMinor()).execute();
-                        }
-                    }
-                });
                 beaconManager.startRanging(region);
-
             }
 
             @Override
@@ -205,6 +188,25 @@ public class MainActivity extends AppCompatActivity {
                         null).execute();
             }
         });
+
+        beaconManager.setRangingListener( new BeaconManager.RangingListener(){
+
+            @Override
+            public void onBeaconsDiscovered(Region region, List<Beacon> list) {
+                if (!list.isEmpty()) {
+                    Beacon nearestBeacon = list.get(0);
+                    for (Beacon beacon : list) {
+                        if(nearestBeacon.getMeasuredPower() < beacon.getMeasuredPower())
+                            nearestBeacon = beacon;
+                    }
+                    new AddInRange(WorkflowManager.getWorkflowManager().getMyselfId(),
+                            nearestBeacon.getMajor(),
+                            nearestBeacon.getMinor()).execute();
+                }
+            }
+        });
+
+
 
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
