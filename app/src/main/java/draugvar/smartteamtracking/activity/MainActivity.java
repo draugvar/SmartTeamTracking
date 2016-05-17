@@ -173,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
         // ----- Estimote Beacon set-up ----- //
         beaconManager = new BeaconManager(getApplicationContext());
 
+
         beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
             @Override
             public void onEnteredRegion(Region region, List<Beacon> list) {
@@ -190,9 +191,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onExitedRegion(Region region) {
-                /*new AddInRange(WorkflowManager.getWorkflowManager().getMyselfId(),
+                new AddInRange(WorkflowManager.getWorkflowManager().getMyselfId(),
                         null,
-                        null).execute();*/
+                        null).execute();
             }
         });
 
