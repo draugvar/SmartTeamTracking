@@ -156,7 +156,7 @@ public class FriendsActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             } else {
-                Snackbar.make(item.getActionView(), "No friends selected", Snackbar.LENGTH_LONG)
+                Snackbar.make(findViewById(R.id.coordinator_friends), "No friends selected", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         }

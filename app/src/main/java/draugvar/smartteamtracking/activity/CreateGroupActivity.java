@@ -186,8 +186,8 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
                     }
                 });
             } else {
-                Snackbar.make(item.getActionView(), "Group name must contains at lest 3 chars", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Snackbar.make(findViewById(R.id.coordinator_create_group), "Group name must contains at lest 3 chars",
+                        Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         }
         return super.onOptionsItemSelected(item);
