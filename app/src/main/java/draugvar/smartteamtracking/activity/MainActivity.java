@@ -177,20 +177,29 @@ public class MainActivity extends AppCompatActivity {
         beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
             @Override
             public void onEnteredRegion(Region region, List<Beacon> list) {
-                Beacon mBeacon = list.get(0);
-                for (Beacon beacon : list) {
-                    Log.d("Beacon", beacon.getProximityUUID().toString());
-                    if(mBeacon.getMeasuredPower() < beacon.getMeasuredPower())
-                        mBeacon = beacon;
-                }
-                Log.d("Beacon", mBeacon.toString());
-                new AddInRange(WorkflowManager.getWorkflowManager().getMyselfId(),
-                        mBeacon.getMajor(),
-                        mBeacon.getMinor()).execute();
+                beaconManager.setRangingListener( new BeaconManager.RangingListener(){
+
+                    @Override
+                    public void onBeaconsDiscovered(Region region, List<Beacon> list) {
+                        if (!list.isEmpty()) {
+                            Beacon nearestBeacon = list.get(0);
+                            for (Beacon beacon : list) {
+                                if(nearestBeacon.getMeasuredPower() < beacon.getMeasuredPower())
+                                    nearestBeacon = beacon;
+                            }
+                            new AddInRange(WorkflowManager.getWorkflowManager().getMyselfId(),
+                                    nearestBeacon.getMajor(),
+                                    nearestBeacon.getMinor()).execute();
+                        }
+                    }
+                });
+                beaconManager.startRanging(region);
+
             }
 
             @Override
             public void onExitedRegion(Region region) {
+                beaconManager.stopRanging(region);
                 new AddInRange(WorkflowManager.getWorkflowManager().getMyselfId(),
                         null,
                         null).execute();
@@ -200,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
             public void onServiceReady() {
-                beaconManager.startMonitoring(new Region(
+                beaconManager.startRanging(new Region(
                         "monitored region",
                         UUID.fromString("b9407f30-f5f8-466e-aff9-25556b57fe6d"), // UUID
                         null, null)); // Major, Minor
