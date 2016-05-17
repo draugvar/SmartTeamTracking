@@ -31,6 +31,7 @@ import com.mikepenz.fastadapter.items.AbstractItem;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import draugvar.smartteamtracking.R;
@@ -42,6 +43,7 @@ import draugvar.smartteamtracking.data.User;
 import draugvar.smartteamtracking.listener.CustomGpsStatusListener;
 import draugvar.smartteamtracking.listener.CustomLocationListener;
 import draugvar.smartteamtracking.rest.AddContains;
+import draugvar.smartteamtracking.rest.AddInRange;
 import draugvar.smartteamtracking.rest.GetGroupsOfUsers;
 import draugvar.smartteamtracking.rest.GetPendingGroupsOfUsers;
 import draugvar.smartteamtracking.rest.RemovePending;
@@ -62,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Your Groups");
         this.realm = Realm.getDefaultInstance();
 
         Log.d("LoginTask", "Inside onCreate of MainActivity");
@@ -175,14 +178,20 @@ public class MainActivity extends AppCompatActivity {
             public void onEnteredRegion(Region region, List<Beacon> list) {
                 Beacon mBeacon = list.get(0);
                 for (Beacon beacon : list) {
+                    Log.d("Beacon", beacon.getProximityUUID().toString());
                     if(mBeacon.getMeasuredPower() < beacon.getMeasuredPower())
                         mBeacon = beacon;
                 }
+                new AddInRange(WorkflowManager.getWorkflowManager().getMyselfId(),
+                        mBeacon.getMajor(),
+                        mBeacon.getMinor()).execute();
             }
 
             @Override
             public void onExitedRegion(Region region) {
-                // could add an "exit" notification too if you want (-:
+                /*new AddInRange(WorkflowManager.getWorkflowManager().getMyselfId(),
+                        null,
+                        null).execute();*/
             }
         });
 
@@ -191,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
             public void onServiceReady() {
                 beaconManager.startMonitoring(new Region(
                         "monitored region",
-                        null, // UUID
+                        UUID.fromString("b9407f30-f5f8-466e-aff9-25556b57fe6d"), // UUID
                         null, null)); // Major, Minor
             }
         });

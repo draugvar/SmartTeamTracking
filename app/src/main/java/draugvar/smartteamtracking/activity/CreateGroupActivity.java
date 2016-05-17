@@ -91,9 +91,9 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                mMap.clear();
+                //mMap.clear();
                 circleOptions.radius(progress * 50);
-                mMap.addCircle(circleOptions);
+                //mMap.addCircle(circleOptions);
             }
 
             @Override
