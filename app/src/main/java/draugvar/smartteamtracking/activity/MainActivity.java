@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
             public void onServiceReady() {
-                beaconManager.startRanging(new Region(
+                beaconManager.startMonitoring(new Region(
                         "monitored region",
                         UUID.fromString("b9407f30-f5f8-466e-aff9-25556b57fe6d"), // UUID
                         null, null)); // Major, Minor
