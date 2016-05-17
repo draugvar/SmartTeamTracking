@@ -11,10 +11,14 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+
 import draugvar.smartteamtracking.R;
 import draugvar.smartteamtracking.adapter.FriendItem;
 import draugvar.smartteamtracking.data.Group;
 import draugvar.smartteamtracking.data.User;
+import draugvar.smartteamtracking.rest.GetUsers;
 import io.realm.Realm;
 
 public class GroupActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -26,6 +30,11 @@ public class GroupActivity extends AppCompatActivity implements OnMapReadyCallba
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        String g_name = getIntent().getExtras().getString("group_name", "Group");
+        getSupportActionBar().setTitle(g_name);
+
+        Long gid = getIntent().getExtras().getLong("gid", 0);
 
         // MAP init
         MapFragment mapFragment = (MapFragment) getFragmentManager()
@@ -41,6 +50,16 @@ public class GroupActivity extends AppCompatActivity implements OnMapReadyCallba
         assert recyclerView != null;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(fastAdapter);
+
+        try {
+            Set<User> users = new GetUsers().execute(gid).get();
+            for(User user: users) {
+                FriendItem friendItem = new FriendItem(user);
+                fastAdapter.add(friendItem);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
 
         //NEEDS TO BE POPULATED WITH REST CALLS!
         /*Realm realm = Realm.getDefaultInstance();

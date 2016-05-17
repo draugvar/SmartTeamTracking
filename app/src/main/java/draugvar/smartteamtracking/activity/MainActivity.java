@@ -306,6 +306,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (item instanceof GroupItem) {
                     GroupItem groupItem = (GroupItem) item;
                     Intent intent = new Intent(getApplicationContext(), GroupActivity.class);
+                    intent.putExtra("group_name", groupItem.group.getName());
                     intent.putExtra("gid", groupItem.group.getGid());
                     startActivity(intent);
                 }
