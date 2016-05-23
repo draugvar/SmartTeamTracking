@@ -1,7 +1,6 @@
 package draugvar.smartteamtracking.activity;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -31,13 +30,11 @@ import org.parceler.Parcels;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 import draugvar.smartteamtracking.R;
 import draugvar.smartteamtracking.adapter.GroupMemberItem;
 import draugvar.smartteamtracking.data.Group;
 import draugvar.smartteamtracking.data.User;
-import draugvar.smartteamtracking.rest.GetUsers;
 import draugvar.smartteamtracking.service.UpdateGroup;
 import draugvar.smartteamtracking.singleton.WorkflowManager;
 
@@ -88,11 +85,11 @@ public class GroupActivity extends AppCompatActivity implements OnMapReadyCallba
                 if(item.user.getBeacon() == null && item.user.getLatGPS() != null
                         && item.user.getLonGPS()!= null) {
                     latlng = new LatLng(item.user.getLatGPS(), item.user.getLonGPS());
-                    mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(latlng, 12));
+                    mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(latlng, 17));
                 } else if(item.user.getBeacon() != null){
                     latlng = new LatLng(item.user.getBeacon().getLatBeacon(),
                                         item.user.getBeacon().getLonBeacon());
-                    mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(latlng, 12));
+                    mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(latlng, 17));
                 }
                 return true;
             }

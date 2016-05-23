@@ -5,18 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,9 +29,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.parceler.Parcels;
 
-import java.security.Provider;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import draugvar.smartteamtracking.R;
@@ -44,7 +38,6 @@ import draugvar.smartteamtracking.data.User;
 import draugvar.smartteamtracking.rest.CreateGroup;
 import draugvar.smartteamtracking.rest.InviteUsersToGroup;
 import draugvar.smartteamtracking.singleton.WorkflowManager;
-import io.realm.Realm;
 
 public class CreateGroupActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -52,7 +45,6 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
     private LocationManager locationManager;
     private CircleOptions circleOptions;
     private EditText group_name;
-    private Realm realm;
     private SeekBar seekBar;
     private Double latitude;
     private Double longitude;
@@ -64,10 +56,9 @@ public class CreateGroupActivity extends AppCompatActivity implements OnMapReady
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Create Group");
-
-        realm = Realm.getDefaultInstance();
 
         group_name = (EditText) findViewById(R.id.chosen_group_name);
 

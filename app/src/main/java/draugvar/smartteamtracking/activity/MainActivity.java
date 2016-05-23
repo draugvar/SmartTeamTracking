@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        assert  getSupportActionBar() != null;
         getSupportActionBar().setTitle("Your Groups");
         this.realm = Realm.getDefaultInstance();
 
@@ -112,10 +114,10 @@ public class MainActivity extends AppCompatActivity {
                         assert groupList != null;
 
                         for (Group group : groupPendingList) {
-                            Iterator<AbstractItem> itemIterator = fastAdapter.getAdapterItems().iterator();
+                            Iterator itemIterator = fastAdapter.getAdapterItems().iterator();
                             boolean found = false;
                             while(itemIterator.hasNext()){
-                                AbstractItem item = itemIterator.next();
+                                AbstractItem item = (AbstractItem) itemIterator.next();
                                 if(item instanceof PendingGroupItem){
                                     if(group.equals(((PendingGroupItem) item).group))
                                         found = true;
@@ -126,10 +128,10 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         for (Group group : groupList) {
-                            Iterator<AbstractItem> itemIterator = fastAdapter.getAdapterItems().iterator();
+                            Iterator itemIterator = fastAdapter.getAdapterItems().iterator();
                             boolean found = false;
                             while(itemIterator.hasNext()){
-                                AbstractItem item = itemIterator.next();
+                                AbstractItem item = (AbstractItem) itemIterator.next();
                                 if(item instanceof GroupItem){
                                     if(group.equals(((GroupItem) item).group))
                                         found = true;
@@ -350,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (permissions.length == 1 &&
                     permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION) &&
