@@ -18,14 +18,14 @@ import io.realm.RealmObject;
 public class Group{
 
     @JsonProperty("id")
-    private long gid;
-    private String name;
-    private Double latCenter;
-    private Double lonCenter;
-    private int radius;
+    long gid;
+    String name;
+    Double latCenter;
+    Double lonCenter;
+    int radius;
     @JsonProperty("contains")
-    private List<User> users;
-    private List<User> pending;
+    List<User> users;
+    List<User> pending;
 
     public Group(){
         this.name = null;

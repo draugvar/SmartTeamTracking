@@ -4,8 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,7 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -31,24 +28,24 @@ import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 
 import org.parceler.Parcels;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+
 import draugvar.smartteamtracking.R;
-import draugvar.smartteamtracking.adapter.FriendItem;
 import draugvar.smartteamtracking.adapter.GroupMemberItem;
 import draugvar.smartteamtracking.data.Group;
 import draugvar.smartteamtracking.data.User;
 import draugvar.smartteamtracking.rest.GetUsers;
 import draugvar.smartteamtracking.service.UpdateGroup;
 import draugvar.smartteamtracking.singleton.WorkflowManager;
-import io.realm.Realm;
 
 public class GroupActivity extends AppCompatActivity implements OnMapReadyCallback {
-    private GoogleMap mMap;
-    private FastItemAdapter<GroupMemberItem> fastAdapter;
+    private static GoogleMap mMap;
+    private static FastItemAdapter<GroupMemberItem> fastAdapter;
     private Group group;
     private Messenger messenger;
-    private Context context;
 
 
     @Override
@@ -56,10 +53,10 @@ public class GroupActivity extends AppCompatActivity implements OnMapReadyCallba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        assert getSupportActionBar() != null;
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        this.context = getApplicationContext();
         group = Parcels.unwrap(getIntent().getParcelableExtra("group"));
         getSupportActionBar().setTitle(group.getName());
 
@@ -72,65 +69,17 @@ public class GroupActivity extends AppCompatActivity implements OnMapReadyCallba
         fastAdapter = new FastItemAdapter<>();
         setFastAdapter();
 
-        Handler groupHandler = new Handler(){
-
-            @Override
-            public void handleMessage(Message msg) {
-                Bundle bundle = msg.getData();
-                Set<User> userSet = Parcels.unwrap(bundle.getParcelable("userSet"));
-                Log.d("Interactive", "Unwrapped userSet in message: "+userSet.toString());
-                fastAdapter.clear();
-                for(User user : userSet){
-                    GroupMemberItem groupMemberItem = new GroupMemberItem(user);
-                    fastAdapter.add(groupMemberItem);
-                }
-
-                //Move stuff inside the map
-                mMap.clear();
-                LatLng latLng;
-                for(GroupMemberItem groupMemberItem: fastAdapter.getAdapterItems()){
-                    if(groupMemberItem.user.getBeacon() == null && groupMemberItem.user.getLatGPS() != null
-                            && groupMemberItem.user.getLonGPS()!=null) {
-                        latLng = new LatLng(groupMemberItem.user.getLatGPS(), groupMemberItem.user.getLonGPS());
-                        mMap.addMarker(new MarkerOptions().position(latLng).title(groupMemberItem.user.getName()));
-                    } else if(groupMemberItem.user.getBeacon() != null) {
-                        latLng = new LatLng(groupMemberItem.user.getBeacon().getLatBeacon(),
-                                groupMemberItem.user.getBeacon().getLonBeacon());
-                        mMap.addMarker(new MarkerOptions().position(latLng).title(groupMemberItem.user.getName()));
-                    }
-                    //All is null
-                }
-
-                //Starting IntentService again
-                /*
-                Intent intent = new Intent(context ,UpdateGroup.class);
-                intent.putExtra("gid", group.getGid());
-                intent.putExtra("messenger", messenger);
-                startService(intent);
-                */
-            }
-        };
+        GroupHandler groupHandler = new GroupHandler();
         messenger = new Messenger(groupHandler);
     }
 
     private void setFastAdapter() {
-        Long gid = group.getGid();
         // set our adapters to the RecyclerView
         // we wrap our FastAdapter inside the ItemAdapter -> This allows us to chain adapters for more complex useCases
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.group_friends);
         assert recyclerView != null;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(fastAdapter);
-
-        try {
-            Set<User> users = new GetUsers().execute(gid).get();
-            for(User user: users) {
-                GroupMemberItem groupMemberItem = new GroupMemberItem(user);
-                fastAdapter.add(groupMemberItem);
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
 
         fastAdapter.withOnClickListener(new FastAdapter.OnClickListener<GroupMemberItem>() {
             @Override
@@ -161,6 +110,8 @@ public class GroupActivity extends AppCompatActivity implements OnMapReadyCallba
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                         new LatLng(WorkflowManager.getWorkflowManager().getMyselfGPSLatitude(),
                                    WorkflowManager.getWorkflowManager().getMyselfGPSLongitude()), 12));
+            } else {
+
             }
         } else {
             // Show rationale and request permission.
@@ -198,5 +149,35 @@ public class GroupActivity extends AppCompatActivity implements OnMapReadyCallba
     protected void onResume() {
         super.onResume();
         UpdateGroup.shouldContinue = true;
+    }
+
+    private static class GroupHandler extends Handler{
+
+        @Override
+        public void handleMessage(Message msg) {
+            Bundle bundle = msg.getData();
+            Set<User> userSet = Parcels.unwrap(bundle.getParcelable("userSet"));
+            Log.d("Interactive", "Unwrapped userSet in message: " + userSet.toString());
+            List<GroupMemberItem> groupMemberItemList = new LinkedList<>();
+            for(User user : userSet){
+                groupMemberItemList.add( new GroupMemberItem(user) );
+            }
+            fastAdapter.set(groupMemberItemList);
+            //Move stuff inside the map
+            mMap.clear();
+            LatLng latLng;
+            for(GroupMemberItem groupMemberItem: fastAdapter.getAdapterItems()){
+                if(groupMemberItem.user.getBeacon() == null && groupMemberItem.user.getLatGPS() != null
+                        && groupMemberItem.user.getLonGPS()!=null) {
+                    latLng = new LatLng(groupMemberItem.user.getLatGPS(), groupMemberItem.user.getLonGPS());
+                    mMap.addMarker(new MarkerOptions().position(latLng).title(groupMemberItem.user.getName()));
+                } else if(groupMemberItem.user.getBeacon() != null) {
+                    latLng = new LatLng(groupMemberItem.user.getBeacon().getLatBeacon(),
+                            groupMemberItem.user.getBeacon().getLonBeacon());
+                    mMap.addMarker(new MarkerOptions().position(latLng).title(groupMemberItem.user.getName()));
+                }
+                //All is null
+            }
+        }
     }
 }

@@ -60,7 +60,7 @@ public class UpdateGroup extends IntentService {
                 }
             }
             Log.d("Interactive", "Inside onHandleIntent. Going to sleep.");
-            SystemClock.sleep(2000);
+            SystemClock.sleep(5000);
         }
         Log.d("Interactive", "UpdateGroup IntentService finished");
     }

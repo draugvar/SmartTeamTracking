@@ -31,7 +31,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-
         /*
         // Add code to print out the key hash
         try {
@@ -48,21 +47,16 @@ public class SplashActivity extends AppCompatActivity {
         }
         */
 
-        int SPLASH_TIME_OUT = 100;
-        new Handler().postDelayed(new Runnable() {
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        Log.d("LoginTask","Inside onCreate of SplashActivity");
+    }
 
-            /*
-             * Showing splash screen with a timer. This will be useful when you
-             * want to show case your app logo / company
-             */
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                // This method will be executed once the timer is over
-                // Start your app main activity
-                FacebookSdk.sdkInitialize(getApplicationContext());
-                Log.d("LoginTask","Inside onCreate of SplashActivity");
-
                 Realm realm = Realm.getDefaultInstance();
                 if(AccessToken.getCurrentAccessToken() == null) {
                     Intent i = new Intent(SplashActivity.this, LoginActivity.class);
@@ -90,6 +84,10 @@ public class SplashActivity extends AppCompatActivity {
                 // close this activity
                 finish();
             }
-        }, SPLASH_TIME_OUT);
+        });
+        thread.start();
+        while(!thread.isAlive()){
+            finish();
+        }
     }
 }

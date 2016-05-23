@@ -1,14 +1,12 @@
 package draugvar.smartteamtracking.activity;
 
 import android.Manifest;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -42,7 +40,6 @@ import draugvar.smartteamtracking.adapter.GroupItem;
 import draugvar.smartteamtracking.adapter.PendingGroupItem;
 import draugvar.smartteamtracking.data.Group;
 import draugvar.smartteamtracking.data.Myself;
-import draugvar.smartteamtracking.data.User;
 import draugvar.smartteamtracking.listener.CustomGpsStatusListener;
 import draugvar.smartteamtracking.listener.CustomLocationListener;
 import draugvar.smartteamtracking.rest.AddContains;
@@ -51,7 +48,6 @@ import draugvar.smartteamtracking.rest.GetGroupsOfUsers;
 import draugvar.smartteamtracking.rest.GetPendingGroupsOfUsers;
 import draugvar.smartteamtracking.rest.RemovePending;
 import draugvar.smartteamtracking.rest.RemoveUserFromGroup;
-import draugvar.smartteamtracking.rest.UpdateUserGPSCoordinates;
 import draugvar.smartteamtracking.singleton.WorkflowManager;
 import io.realm.Realm;
 
@@ -95,57 +91,57 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Long myselfId = WorkflowManager.getWorkflowManager().getMyselfId();
-        List<Group> groupList = null;
-        List<Group> groupPendingList = null;
+        final Long myselfId = WorkflowManager.getWorkflowManager().getMyselfId();
 
-        // update with current groups and pending groups
-        try {
-            groupList = new GetGroupsOfUsers(myselfId).execute().get();
-            groupPendingList = new GetPendingGroupsOfUsers(myselfId).execute().get();
-        } catch (InterruptedException | ExecutionException e) {
-            Log.d("Rest", "MainActivity - onResume - Cannot retrieve groupList or groupPendingList ");
-            e.printStackTrace();
-        }
-
-        assert groupPendingList != null;
-        assert groupList != null;
-
-        for (Group group : groupPendingList) {
-            /*PendingGroupItem groupItem = new PendingGroupItem(group);
-            if (!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
-                fastAdapter.add(0, groupItem);*/
-            Iterator<AbstractItem> itemIterator = fastAdapter.getAdapterItems().iterator();
-            boolean found = false;
-            while(itemIterator.hasNext()){
-                AbstractItem item = itemIterator.next();
-                if(item instanceof PendingGroupItem){
-                    if(group.equals(((PendingGroupItem) item).group))
-                        found = true;
+        new Thread(new Runnable() {
+            List<Group> groupList = null;
+            List<Group> groupPendingList = null;
+            @Override
+            public void run() {
+                try {
+                    groupList = new GetGroupsOfUsers(myselfId).execute().get();
+                    groupPendingList = new GetPendingGroupsOfUsers(myselfId).execute().get();
+                } catch (InterruptedException | ExecutionException e) {
+                    Log.d("Rest", "MainActivity - onResume - Cannot retrieve groupList or groupPendingList ");
+                    e.printStackTrace();
                 }
-            }
-            if(!found)
-                fastAdapter.add(0,new PendingGroupItem(group));
-        }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        assert groupPendingList != null;
+                        assert groupList != null;
 
-        for (Group group : groupList) {
-            /* GroupItem groupItem = new GroupItem(group);
-            if (!fastAdapter.getAdapterItems().contains(groupItem))    //This might be too slow
-            {
-                fastAdapter.add(groupItem);
-            }*/
-            Iterator<AbstractItem> itemIterator = fastAdapter.getAdapterItems().iterator();
-            boolean found = false;
-            while(itemIterator.hasNext()){
-                AbstractItem item = itemIterator.next();
-                if(item instanceof GroupItem){
-                    if(group.equals(((GroupItem) item).group))
-                        found = true;
-                }
+                        for (Group group : groupPendingList) {
+                            Iterator<AbstractItem> itemIterator = fastAdapter.getAdapterItems().iterator();
+                            boolean found = false;
+                            while(itemIterator.hasNext()){
+                                AbstractItem item = itemIterator.next();
+                                if(item instanceof PendingGroupItem){
+                                    if(group.equals(((PendingGroupItem) item).group))
+                                        found = true;
+                                }
+                            }
+                            if(!found)
+                                fastAdapter.add(0,new PendingGroupItem(group));
+                        }
+
+                        for (Group group : groupList) {
+                            Iterator<AbstractItem> itemIterator = fastAdapter.getAdapterItems().iterator();
+                            boolean found = false;
+                            while(itemIterator.hasNext()){
+                                AbstractItem item = itemIterator.next();
+                                if(item instanceof GroupItem){
+                                    if(group.equals(((GroupItem) item).group))
+                                        found = true;
+                                }
+                            }
+                            if(!found)
+                                fastAdapter.add(new GroupItem(group));
+                        }
+                    }
+                });
             }
-            if(!found)
-                fastAdapter.add(new GroupItem(group));
-        }
+        }).start();// update with current groups and pending groups
         setBeaconManager();
     }
 
@@ -178,8 +174,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
+            private boolean flag;
+
             @Override
             public void onEnteredRegion(Region region, List<Beacon> list) {
+                flag =  true;
                 Log.d("Beacon","Called onEnteredRegion");
                 //beaconManager.startRanging(region);
                 if(list.size() != 0) {
@@ -201,12 +200,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onExitedRegion(Region region) {
-                Log.d("Beacon","Called onExitedRegion");
-                //beaconManager.stopRanging(region);
-                new AddInRange(WorkflowManager.getWorkflowManager().getMyselfId(),
-                        null,
-                        null).execute();
-                WorkflowManager.getWorkflowManager().setCurrentBeacon(null);
+                if(flag) {
+                    flag = false;
+                } else {
+                    Log.d("Beacon", "Called onExitedRegion");
+                    beaconManager.stopRanging(region);
+                    new AddInRange(WorkflowManager.getWorkflowManager().getMyselfId(),
+                            null,
+                            null).execute();
+                    WorkflowManager.getWorkflowManager().setCurrentBeacon(null);
+                }
             }
         });
 
