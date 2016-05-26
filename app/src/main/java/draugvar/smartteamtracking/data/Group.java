@@ -21,6 +21,7 @@ public class Group{
     long gid;
     String name;
     Double latCenter;
+    @JsonProperty("longCenter")
     Double lonCenter;
     int radius;
     @JsonProperty("contains")

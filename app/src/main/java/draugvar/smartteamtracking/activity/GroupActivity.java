@@ -108,7 +108,9 @@ public class GroupActivity extends AppCompatActivity implements OnMapReadyCallba
                         new LatLng(WorkflowManager.getWorkflowManager().getMyselfGPSLatitude(),
                                    WorkflowManager.getWorkflowManager().getMyselfGPSLongitude()), 12));
             } else {
-
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(group.getLatCenter(),
+                                group.getLonCenter()), 12));
             }
         } else {
             // Show rationale and request permission.
