@@ -129,12 +129,6 @@ public class GroupActivity extends AppCompatActivity implements OnMapReadyCallba
             }
             //All is null
         }
-
-        //Starting IntentService for updating UI
-        Intent intent = new Intent(this,UpdateGroup.class);
-        intent.putExtra("gid", group.getGid());
-        intent.putExtra("messenger", this.messenger);
-        startService(intent);
     }
 
 
@@ -145,9 +139,14 @@ public class GroupActivity extends AppCompatActivity implements OnMapReadyCallba
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         UpdateGroup.shouldContinue = true;
+        //Starting IntentService for updating UI
+        Intent intent = new Intent(this,UpdateGroup.class);
+        intent.putExtra("gid", group.getGid());
+        intent.putExtra("messenger", this.messenger);
+        startService(intent);
     }
 
     private static class GroupHandler extends Handler{

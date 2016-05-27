@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -174,16 +176,37 @@ public class MainActivity extends AppCompatActivity {
         // ----- Estimote Beacon set-up ----- //
         beaconManager = new BeaconManager(getApplicationContext());
 
-
         beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
             private boolean flag;
 
+            private Thread thread = new Thread( new Runnable() {
+                public volatile boolean shouldContinue = true;
+                @Override
+                public void run() {
+                    while(shouldContinue) {
+                        Log.d("onExitedRegion", "runnable started!");
+                        if (flag) {
+                            flag = false;
+                        } else {
+                            Log.d("Beacon", "Called onExitedRegion");
+                            //beaconManager.stopRanging(region);
+                            new AddInRange(WorkflowManager.getWorkflowManager().getMyselfId(),
+                                    null,
+                                    null).execute();
+                            WorkflowManager.getWorkflowManager().setCurrentBeacon(null);
+                            shouldContinue = false;
+                        }
+                        SystemClock.sleep(35000);
+                    }
+                }
+            });
+
             @Override
             public void onEnteredRegion(Region region, List<Beacon> list) {
-                flag =  true;
                 Log.d("Beacon","Called onEnteredRegion");
                 //beaconManager.startRanging(region);
                 if(list.size() != 0) {
+                    flag =  true;
                     Beacon nearestBeacon = list.get(0);
                     if (WorkflowManager.getWorkflowManager().getCurrentBeacon() == null
                             || !WorkflowManager.getWorkflowManager().getCurrentBeacon().getMajor().equals(nearestBeacon.getMajor())
@@ -202,15 +225,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onExitedRegion(Region region) {
-                if(flag) {
-                    flag = false;
-                } else {
-                    Log.d("Beacon", "Called onExitedRegion");
-                    beaconManager.stopRanging(region);
-                    new AddInRange(WorkflowManager.getWorkflowManager().getMyselfId(),
-                            null,
-                            null).execute();
-                    WorkflowManager.getWorkflowManager().setCurrentBeacon(null);
+                if(!thread.isAlive()){
+                    thread.start();
                 }
             }
         });
@@ -242,8 +258,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
 
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
