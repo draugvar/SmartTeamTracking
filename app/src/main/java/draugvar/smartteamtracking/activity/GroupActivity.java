@@ -29,6 +29,7 @@ import org.parceler.Parcels;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 
 import draugvar.smartteamtracking.R;
@@ -160,7 +161,21 @@ public class GroupActivity extends AppCompatActivity implements OnMapReadyCallba
             for(User user : userSet){
                 groupMemberItemList.add( new GroupMemberItem(user) );
             }
-            fastAdapter.set(groupMemberItemList);
+            List<GroupMemberItem> itemList = fastAdapter.getAdapterItems();
+            for(GroupMemberItem rest_item : groupMemberItemList){
+                Boolean flag = false;
+                for (GroupMemberItem item : itemList) {
+                    if (rest_item.user.getUid() == item.user.getUid()) {
+                        item.user = rest_item.user;
+                        flag = true;
+                        fastAdapter.notifyAdapterDataSetChanged();
+                        break;
+                    }
+                }
+                if(!flag){
+                    fastAdapter.add(rest_item);
+                }
+            }
             //Move stuff inside the map
             mMap.clear();
             LatLng latLng;
@@ -174,7 +189,6 @@ public class GroupActivity extends AppCompatActivity implements OnMapReadyCallba
                             groupMemberItem.user.getBeacon().getLonBeacon());
                     mMap.addMarker(new MarkerOptions().position(latLng).title(groupMemberItem.user.getName()));
                 }
-                //All is null
             }
         }
     }
